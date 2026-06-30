@@ -18,22 +18,20 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const supabase = createServiceRoleClient();
-  const faqInsertPayload: Record<string, unknown> = {
+  const faqInsertPayload = {
     studio_id: body.studio_id || null,
     category: body.category || "general",
     question: body.question,
     answer: body.answer,
     is_published: true
-  };
+  } as unknown as never;
 
   const { data, error } = await supabase
     .from("faqs")
-    .insert(faqInsertPayload as never)
+    .insert(faqInsertPayload)
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ faq: data });
-}
-
 }
