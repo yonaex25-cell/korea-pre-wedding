@@ -2,38 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-export async function GET(request: NextRequest) {
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function PATCH(request: NextRequest, context: RouteContext) {
   const admin = await requireAdmin(request);
   if (admin.error) return admin.error;
 
+  const { id } = await context.params;
+  const payload = await request.json();
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase.from("reviews").select("*").order("created_at", { ascending: false });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ reviews: data || [] });
-}
-
-export async function POST(request: NextRequest) {
-  const admin = await requireAdmin(request);
-  if (admin.error) return admin.error;
-
-  const body = await request.json();
-  const supabase = createServiceRoleClient();
-  const reviewInsertPayload: Record<string, unknown> = {
-    studio_id: body.studio_id || null,
-    customer_name: body.customer_name,
-    location: body.location,
-    rating: Number(body.rating || 5),
-    body: body.body,
-    is_published: true,
-    published_at: new Date().toISOString()
+  const studioUpdatePayload: Record<string, unknown> = {
+    ...payload,
+    updated_at: new Date().toISOString()
   };
 
   const { data, error } = await supabase
-    .from("reviews")
-    .insert(reviewInsertPayload as never)
+    .from("studios")
+    .update(studioUpdatePayload as never)
+    .eq("id", id)
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ review: data });
+  return NextResponse.json({ studio: data });
+}
+
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  const admin = await requireAdmin(request);
+  if (admin.error) return admin.error;
+
+  const { id } = await context.params;
+  const supabase = createServiceRoleClient();
+  const { error } = await supabase.from("studios").delete().eq("id", id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
 }
