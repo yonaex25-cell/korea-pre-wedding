@@ -44,7 +44,8 @@ export async function POST(request: NextRequest) {
   if (!payload.success) return NextResponse.json({ error: "Invalid studio payload." }, { status: 400 });
 
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase.from("studios").insert(payload.data).select().single();
+  const studioInsertPayload: Record<string, unknown> = payload.data;
+  const { data, error } = await supabase.from("studios").insert(studioInsertPayload as never).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ studio: data });
 }
