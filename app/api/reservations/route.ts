@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   const supabase = createAnonServerClient();
-  const { error } = await supabase.from("reservations").insert({
+  const reservationInsertPayload: Record<string, unknown> = {
     studio_id: payload.data.studioId || null,
     name: payload.data.name,
     email: payload.data.email,
@@ -34,7 +34,9 @@ export async function POST(request: Request) {
     preferred_date: payload.data.preferredDate,
     message: payload.data.message,
     status: "new"
-  });
+  };
+
+  const { error } = await supabase.from("reservations").insert(reservationInsertPayload as never);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
