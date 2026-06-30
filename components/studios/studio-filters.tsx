@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { regions, styles } from "@/lib/data";
-import type { Studio } from "@/lib/types";
+import type { Region, Studio, StudioStyle } from "@/lib/types";
 
 export function StudioFilters({ studios }: { studios: Studio[] }) {
   const [query, setQuery] = useState("");
-  const [region, setRegion] = useState("All");
-  const [style, setStyle] = useState("All");
-  const [budget, setBudget] = useState("All");
+  const [region, setRegion] = useState<Region | "All">("All");
+  const [style, setStyle] = useState<StudioStyle | "All">("All");
+  const [budget, setBudget] = useState<Studio["budget"] | "All">("All");
 
   const filtered = useMemo(() => {
     return studios.filter((studio) => {
@@ -22,7 +22,7 @@ export function StudioFilters({ studios }: { studios: Studio[] }) {
         .toLowerCase()
         .includes(query.toLowerCase());
       const matchesRegion = region === "All" || studio.region === region;
-      const matchesStyle = style === "All" || studio.styles.includes(style as never);
+      const matchesStyle = style === "All" || studio.styles.includes(style);
       const matchesBudget = budget === "All" || studio.budget === budget;
       return matchesQuery && matchesRegion && matchesStyle && matchesBudget;
     });
@@ -47,21 +47,21 @@ export function StudioFilters({ studios }: { studios: Studio[] }) {
           </div>
           <div>
             <Label>Region</Label>
-            <Select className="mt-2" value={region} onChange={(event) => setRegion(event.target.value)}>
+            <Select className="mt-2" value={region} onChange={(event) => setRegion(event.target.value as Region | "All")}>
               <option>All</option>
               {regions.map((item) => <option key={item}>{item}</option>)}
             </Select>
           </div>
           <div>
             <Label>Style</Label>
-            <Select className="mt-2" value={style} onChange={(event) => setStyle(event.target.value)}>
+            <Select className="mt-2" value={style} onChange={(event) => setStyle(event.target.value as StudioStyle | "All")}>
               <option>All</option>
               {styles.map((item) => <option key={item}>{item}</option>)}
             </Select>
           </div>
           <div>
             <Label>Budget</Label>
-            <Select className="mt-2" value={budget} onChange={(event) => setBudget(event.target.value)}>
+            <Select className="mt-2" value={budget} onChange={(event) => setBudget(event.target.value as Studio["budget"] | "All")}>
               <option>All</option>
               <option>Premium</option>
               <option>Luxury</option>
