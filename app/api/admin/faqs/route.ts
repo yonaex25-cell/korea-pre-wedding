@@ -1,37 +1,48 @@
-import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/admin-auth";
-import { createServiceRoleClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { createAnonServerClient, hasSupabaseEnv } from "@/lib/supabase/server";
 
-export async function GET(request: NextRequest) {
-  const admin = await requireAdmin(request);
-  if (admin.error) return admin.error;
+const reservationSchema = z.object({
+  studioId: z.string().optional(),
+  name: z.string().min(2),
+  email: z.string().email(),
+  lineId: z.string().min(2),
+  preferredDate: z.string().min(4),
+  message: z.string().min(5)
+});
 
-  const supabase = createServiceRoleClient();
-  const { data, error } = await supabase.from("faqs").select("*").order("sort_order", { ascending: true });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ faqs: data || [] });
-}
+export async function POST(request: Request) {
+  const payload = reservationSchema.safeParse(await request.json());
 
-export async function POST(request: NextRequest) {
-  const admin = await requireAdmin(request);
-  if (admin.error) return admin.error;
+  if (!payload.success) {
+    return NextResponse.json({ error: "Please complete all reservation fields." }, { status: 400 });
+  }
 
-  const body = await request.json();
-  const supabase = createServiceRoleClient();
-  const faqInsertPayload = {
-    studio_id: body.studio_id || null,
-    category: body.category || "general",
-    question: body.question,
-    answer: body.answer,
-    is_published: true
+  if (!hasSupabaseEnv()) {
+    return NextResponse.json(
+      { error: "Supabase is not configured. Add .env.local values before saving reservations." },
+      { status: 503 }
+    );
+  }
+
+  const supabase = createAnonServerClient();
+  const reservationInsertPayload = {
+    studio_id: payload.data.studioId || null,
+    name: payload.data.name,
+    email: payload.data.email,
+    line_id: payload.data.lineId,
+    preferred_date: payload.data.preferredDate,
+    message: payload.data.message,
+    status: "new"
   };
 
-  const { data, error } = await supabase
-    .from("faqs")
-    .insert(faqInsertPayload as never)
-    .select()
-    .single();
+  const { error } = await supabase.from("reservations").insert(reservationInsertPayload as never);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ faq: data });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    message: "Reservation request saved. We will contact you by email or LINE."
+  });
 }
