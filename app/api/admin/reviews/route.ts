@@ -18,17 +18,19 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const supabase = createServiceRoleClient();
+  const reviewInsertPayload: Record<string, unknown> = {
+    studio_id: body.studio_id || null,
+    customer_name: body.customer_name,
+    location: body.location,
+    rating: Number(body.rating || 5),
+    body: body.body,
+    is_published: true,
+    published_at: new Date().toISOString()
+  };
+
   const { data, error } = await supabase
     .from("reviews")
-    .insert({
-      studio_id: body.studio_id || null,
-      customer_name: body.customer_name,
-      location: body.location,
-      rating: Number(body.rating || 5),
-      body: body.body,
-      is_published: true,
-      published_at: new Date().toISOString()
-    })
+    .insert(reviewInsertPayload as never)
     .select()
     .single();
 
