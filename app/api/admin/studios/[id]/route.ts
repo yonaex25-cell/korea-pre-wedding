@@ -9,11 +9,16 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   if (admin.error) return admin.error;
 
   const { id } = await context.params;
-  const payload = await request.json();
+  const payload = (await request.json()) as Record<string, unknown>;
   const supabase = createServiceRoleClient();
+  const updatePayload: Record<string, unknown> = {
+    ...payload,
+    updated_at: new Date().toISOString()
+  };
+
   const { data, error } = await supabase
     .from("studios")
-    .update({ ...payload, updated_at: new Date().toISOString() })
+    .update(updatePayload as never)
     .eq("id", id)
     .select()
     .single();
