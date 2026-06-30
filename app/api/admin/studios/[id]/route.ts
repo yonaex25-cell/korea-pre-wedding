@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-type RouteContext = { params: Promise<{ id: string }> };
-
-export async function PATCH(request: NextRequest, context: RouteContext) {
+export async function PATCH(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin(request);
   if (admin.error) return admin.error;
 
@@ -27,7 +25,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   return NextResponse.json({ studio: data });
 }
 
-export async function DELETE(request: NextRequest, context: RouteContext) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin(request);
   if (admin.error) return admin.error;
 
