@@ -16,7 +16,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.469.0",
-    "next": "latest",
+    "next": "15.5.9",
     "openai": "^4.77.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -24,13 +24,17 @@
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.1"
   },
+  "overrides": {
+    "next": "15.5.9",
+    "eslint-config-next": "15.5.9"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "latest",
+    "eslint-config-next": "15.5.9",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2"
