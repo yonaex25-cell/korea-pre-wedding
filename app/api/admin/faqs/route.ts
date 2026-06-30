@@ -18,15 +18,17 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const supabase = createServiceRoleClient();
+  const faqInsertPayload = {
+    studio_id: body.studio_id || null,
+    category: body.category || "general",
+    question: body.question,
+    answer: body.answer,
+    is_published: true
+  };
+
   const { data, error } = await supabase
     .from("faqs")
-    .insert({
-      studio_id: body.studio_id || null,
-      category: body.category || "general",
-      question: body.question,
-      answer: body.answer,
-      is_published: true
-    })
+    .insert(faqInsertPayload as never)
     .select()
     .single();
 
