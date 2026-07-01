@@ -5,12 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 import { Button } from "@/components/ui/button";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { isAdminEmail } from "@/lib/admin";
 import { cn } from "@/lib/utils";
-
-const ADMIN_EMAIL = "yonaex25@gmail.com";
 
 const navItems = [
   { href: "/studios", label: "Studios" },
@@ -20,23 +19,21 @@ const navItems = [
   { href: "/contact", label: "Contact" }
 ];
 
-function isAdminEmail(email?: string | null) {
-  return email?.trim().toLowerCase() === ADMIN_EMAIL;
-}
-
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [showAdminButton, setShowAdminButton] = useState(false);
 
   useEffect(() => {
-    const supabase = createBrowserSupabaseClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!supabase) {
+    if (!supabaseUrl || !supabaseAnonKey) {
       setShowAdminButton(false);
       return;
     }
 
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
     let isMounted = true;
 
     supabase.auth.getUser().then(({ data }) => {
@@ -45,11 +42,9 @@ export function Header() {
       }
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setShowAdminButton(isAdminEmail(session?.user.email));
-      }
-    );
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setShowAdminButton(isAdminEmail(session?.user.email));
+    });
 
     return () => {
       isMounted = false;
