@@ -1,39 +1,33 @@
-import { NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createAnonServerClient } from "@/lib/supabase/server";
 import { isAdminEmail } from "@/lib/admin";
 
-export async function requireAdminClient() {
-  const supabase = await createServerSupabaseClient();
+export async function requireAdmin(request: NextRequest): Promise<{
+  error?: NextResponse;
+  user?: { email?: string | null };
+}> {
+  const token = request.headers.get("authorization")?.replace("Bearer ", "");
 
-  if (!supabase) {
+  if (!token) {
     return {
-      response: NextResponse.json(
-        { message: "Supabase is not configured. Add environment variables to enable admin writes." },
-        { status: 503 }
-      )
+      error: NextResponse.json({ error: "Missing admin session." }, { status: 401 })
     };
   }
 
-  const { data, error } = await supabase.auth.getUser();
+  const supabase = createAnonServerClient(token);
+  const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data.user) {
+  if (error || !data.user?.email) {
     return {
-      response: NextResponse.json(
-        { message: "Admin authentication required." },
-        { status: 401 }
-      )
+      error: NextResponse.json({ error: "Invalid admin session." }, { status: 401 })
     };
   }
 
   if (!isAdminEmail(data.user.email)) {
     return {
-      response: NextResponse.json(
-        { message: "Admin access required." },
-        { status: 403 }
-      )
+      error: NextResponse.json({ error: "This account is not authorized for admin access." }, { status: 403 })
     };
   }
 
-  return { supabase, user: data.user };
+  return { user: data.user };
 }
-
