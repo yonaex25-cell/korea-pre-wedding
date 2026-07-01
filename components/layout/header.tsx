@@ -1,81 +1,130 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-const links = [
+const ADMIN_EMAIL = "yonaex25@gmail.com";
+
+const navItems = [
   { href: "/studios", label: "Studios" },
-  { href: "/ai-recommendation", label: "AI Match" },
-  { href: "/reservation", label: "Reservation" },
+  { href: "/ai-recommendation", label: "AI相談" },
   { href: "/reviews", label: "Reviews" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" }
 ];
 
+function isAdminEmail(email?: string | null) {
+  return email?.trim().toLowerCase() === ADMIN_EMAIL;
+}
+
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [showAdminButton, setShowAdminButton] = useState(false);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      setShowAdminButton(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (isMounted) {
+        setShowAdminButton(isAdminEmail(data.user?.email));
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setShowAdminButton(isAdminEmail(session?.user.email));
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/88 backdrop-blur-xl">
-      <div className="section-shell flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Sparkles className="h-4 w-4" />
-          </span>
-          <span>Korea Pre Wedding</span>
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/88 backdrop-blur-xl">
+      <div className="container-shell flex h-16 items-center justify-between">
+        <Link href="/" className="flex items-center gap-3" aria-label="Korea Pre Wedding home">
+          <Image src="/logo.svg" alt="Korea Pre Wedding" width={36} height={36} className="rounded-lg" priority />
+          <span className="text-sm font-semibold tracking-[0.16em] text-ink">KOREA PRE WEDDING</span>
         </Link>
-        <nav className="hidden items-center gap-1 lg:flex">
-          {links.map((link) => (
+
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
+          {navItems.map((item) => (
             <Link
-              key={link.href}
-              href={link.href}
+              key={item.href}
+              href={item.href}
               className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium transition hover:bg-muted",
-                pathname === link.href && "bg-muted text-primary"
+                "text-sm font-medium text-muted-foreground transition hover:text-foreground",
+                pathname === item.href && "text-foreground"
               )}
             >
-              {link.label}
+              {item.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild variant="ghost">
-            <Link href="/admin">Admin</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/reservation">Reserve</Link>
+
+        <div className="hidden items-center gap-3 lg:flex">
+          {showAdminButton ? (
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/admin/dashboard">Admin</Link>
+            </Button>
+          ) : null}
+
+          <Button asChild size="sm">
+            <Link href="/reservation">
+              <Sparkles aria-hidden /> 予約相談
+            </Link>
           </Button>
         </div>
+
         <Button
-          aria-label="Toggle navigation"
-          className="lg:hidden"
-          size="icon"
           variant="ghost"
+          size="icon"
+          className="lg:hidden"
           onClick={() => setOpen((value) => !value)}
+          aria-label="Open menu"
         >
-          {open ? <X /> : <Menu />}
+          {open ? <X aria-hidden /> : <Menu aria-hidden />}
         </Button>
       </div>
+
       {open ? (
-        <div className="border-t bg-background lg:hidden">
-          <nav className="section-shell grid gap-2 py-4">
-            {links.map((link) => (
+        <div className="border-t border-border bg-background lg:hidden">
+          <nav className="container-shell grid gap-2 py-4" aria-label="Mobile navigation">
+            {navItems.map((item) => (
               <Link
-                key={link.href}
-                href={link.href}
+                key={item.href}
+                href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium hover:bg-muted"
+                className="rounded-lg px-3 py-3 text-sm font-medium hover:bg-secondary"
               >
-                {link.label}
+                {item.label}
               </Link>
             ))}
-            <Link href="/admin" onClick={() => setOpen(false)} className="rounded-md px-3 py-3 text-sm font-medium hover:bg-muted">
-              Admin
+
+            <Link
+              href="/reservation"
+              onClick={() => setOpen(false)}
+              className="rounded-lg bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground"
+            >
+              予約相談
             </Link>
           </nav>
         </div>
