@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/studios", label: "Studios" },
-  { href: "/ai-recommendation", label: "AI相談" },
+  { href: "/ai-recommendation", label: "AI Match" },
   { href: "/reviews", label: "Reviews" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" }
@@ -84,7 +84,7 @@ export function Header() {
 
           <Button asChild size="sm">
             <Link href="/reservation">
-              <Sparkles aria-hidden /> 予約相談
+              <Sparkles aria-hidden /> Reserve
             </Link>
           </Button>
         </div>
