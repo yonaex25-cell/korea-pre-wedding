@@ -1,57 +1,92 @@
-export type Region = "Seoul" | "Jeju" | "Busan";
-export type StudioStyle = "Classic" | "Modern" | "Natural" | "Editorial" | "Hanbok";
+export const REGIONS = ["Seoul", "Jeju", "Busan"] as const;
+export type Region = (typeof REGIONS)[number];
+
+export const STYLES = [
+  "Classic",
+  "Editorial",
+  "Natural",
+  "Resort",
+  "Cinematic",
+  "Modern",
+  "Minimal",
+  "Hanbok"
+] as const;
+export type StudioStyle = (typeof STYLES)[number];
+
+export type BudgetFilter = "under300000" | "300000-500000" | "500000plus";
+
+export type StudioFilters = {
+  search?: string;
+  region?: string;
+  style?: string;
+  budget?: string;
+};
+
+export type StudioImage = any;
+
+export type Review = {
+  id: string;
+  studioId?: string | null;
+  studioName?: string;
+  studioSlug?: string;
+  customerName: string;
+  country: string;
+  rating: number;
+  content: string;
+  imageUrl?: string | null;
+  createdAt: string;
+  [key: string]: any;
+};
+
+export type FAQ = {
+  id: string;
+  studioId?: string | null;
+  category: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  [key: string]: any;
+};
 
 export type Studio = {
   id: string;
   slug: string;
   name: string;
-  region: Region;
-  styles: StudioStyle[];
-  budget: "Premium" | "Luxury" | "Signature";
-  priceFromJpy: number;
-  durationHours: number;
-  summary: string;
+  region: Region | string;
+  styles: string[];
+  images: StudioImage[];
   description: string;
-  heroImage: string;
-  images: string[];
-  includedServices: string[];
-  faqs: FAQ[];
-  featured: boolean;
+  priceFrom: number;
   rating: number;
-  reviewCount: number;
+  featured?: boolean;
+  [key: string]: any;
 };
 
-export type Review = {
+export type Reservation = {
   id: string;
-  studioId: string;
-  customerName: string;
-  location: string;
-  rating: number;
-  body: string;
-  imageUrl?: string;
-  publishedAt: string;
-};
-
-export type FAQ = {
-  id: string;
-  question: string;
-  answer: string;
-  category: "general" | "studio" | "reservation" | "travel";
-};
-
-export type ReservationPayload = {
-  studioId?: string;
+  studioId?: string | null;
+  studioSlug?: string | null;
   name: string;
   email: string;
   lineId: string;
   preferredDate: string;
   message: string;
+  status: "new" | "contacted" | "confirmed" | "completed" | "cancelled";
+  createdAt: string;
+  [key: string]: any;
 };
 
-export type RecommendationInput = {
-  region: Region | "Any";
-  style: StudioStyle | "Any";
-  budget: "Under 250,000 JPY" | "250,000-400,000 JPY" | "400,000+ JPY";
+export type RecommendationAnswers = {
+  region: string;
+  style: string;
+  budget: string;
+  season: string;
   priorities: string[];
-  travelMonth: string;
+  mood: string;
+};
+
+export type Recommendation = {
+  studio: Studio;
+  score: number;
+  reasons: string[];
 };

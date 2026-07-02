@@ -3,17 +3,13 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="section-shell flex min-h-[60vh] items-center justify-center">
-      <div className="max-w-xl text-center">
-        <p className="text-sm uppercase tracking-[0.22em] text-primary">404</p>
-        <h1 className="mt-3 text-4xl font-semibold">This page has left the itinerary.</h1>
-        <p className="mt-4 text-muted-foreground">
-          Return to the studio collection and continue planning a polished Korea pre-wedding shoot.
-        </p>
-        <Button asChild className="mt-7">
-          <Link href="/studios">Browse studios</Link>
-        </Button>
+    <main className="container-shell flex min-h-screen items-center justify-center py-20">
+      <div className="max-w-lg space-y-5 text-center">
+        <p className="eyebrow">404</p>
+        <h1 className="text-4xl font-semibold text-ink">Page not found</h1>
+        <p className="leading-7 text-muted-foreground">Check the URL or browse the studio list.</p>
+        <Button asChild><Link href="/studios">View studios</Link></Button>
       </div>
-    </div>
+    </main>
   );
 }

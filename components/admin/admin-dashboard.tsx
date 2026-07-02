@@ -76,6 +76,10 @@ export function AdminDashboard() {
     setStatus("");
     try {
       const supabase = createClient();
+      if (!supabase) {
+  setStatus("Supabase is not configured.");
+  return;
+}
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       setToken(data.session.access_token);
@@ -129,7 +133,7 @@ export function AdminDashboard() {
       description: studio.description,
       hero_image: studio.heroImage,
       included_services: studio.includedServices.join(", "),
-      featured: studio.featured
+      featured: studio.featured ?? false
     });
   }
 

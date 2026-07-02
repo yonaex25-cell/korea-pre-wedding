@@ -1,101 +1,90 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { z } from "zod";
-import { getStudios } from "@/lib/repository";
-import type { Studio } from "@/lib/types";
+import { getStudios } from "@/lib/studio-service";
+import { filterStudiosForAnswers, rankStudios } from "@/lib/recommendations";
+import { isOpenAIConfigured, openAIConfig } from "@/lib/server-config";
+import { recommendationSchema } from "@/lib/validations";
+import type { Recommendation, Studio } from "@/lib/types";
 
-const recommendationSchema = z.object({
-  region: z.enum(["Any", "Seoul", "Jeju", "Busan"]),
-  style: z.enum(["Any", "Classic", "Modern", "Natural", "Editorial", "Hanbok"]),
-  budget: z.enum(["Under 250,000 JPY", "250,000-400,000 JPY", "400,000+ JPY"]),
-  travelMonth: z.string().optional(),
-  priorities: z.array(z.string()).default([])
-});
-
-function scoreStudio(studio: Studio, input: z.infer<typeof recommendationSchema>) {
-  let score = 0;
-  if (input.region === "Any" || studio.region === input.region) score += 3;
-  if (input.style === "Any" || studio.styles.includes(input.style)) score += 3;
-  if (input.budget === "Under 250,000 JPY" && studio.priceFromJpy <= 250000) score += 2;
-  if (input.budget === "250,000-400,000 JPY" && studio.priceFromJpy > 250000 && studio.priceFromJpy <= 400000) score += 2;
-  if (input.budget === "400,000+ JPY" && studio.priceFromJpy >= 400000) score += 2;
-  if (input.priorities.includes("outdoor") && ["Jeju", "Busan"].includes(studio.region)) score += 1;
-  if (input.priorities.includes("translation")) score += 1;
-  if (input.priorities.includes("gowns") && studio.includedServices.some((service) => service.toLowerCase().includes("gown"))) score += 1;
-  if (input.priorities.includes("travelEase") && studio.region !== "Jeju") score += 1;
-  return score;
-}
-
-function deterministicMatch(studios: Studio[], input: z.infer<typeof recommendationSchema>) {
-  const matches = [...studios]
-    .sort((a, b) => scoreStudio(b, input) - scoreStudio(a, input))
-    .slice(0, 3);
-
+function summarizeStudio(studio: Studio) {
   return {
-    summary: `Based on your ${input.region === "Any" ? "flexible destination" : input.region} preference, ${input.style.toLowerCase()} style interest, and ${input.budget} budget, these studios offer the strongest balance of logistics, visual mood, and package fit.`,
-    studios: matches
+    slug: studio.slug,
+    name: studio.name,
+    region: studio.region,
+    city: studio.city,
+    styles: studio.styles,
+    priceFrom: studio.priceFrom,
+    services: studio.services,
+    destinations: studio.destinations,
+    description: studio.description
   };
 }
 
+function mergeOpenAIResult(studios: Studio[], fallback: Recommendation[], content: string) {
+  const parsed = JSON.parse(content) as { slugs?: string[]; notes?: Record<string, string[]> };
+  const bySlug = new Map(studios.map((studio: Studio) => [studio.slug, studio]));
+  const recommendations = (parsed.slugs || [])
+    .map((slug: string, index: number) => {
+      const studio = bySlug.get(slug);
+      if (!studio) {
+        return null;
+      }
+
+      return {
+        studio,
+        score: Math.max(70, 96 - index * 6),
+        reasons: parsed.notes?.[slug]?.slice(0, 3) || fallback.find((item: Recommendation) => item.studio.slug === slug)?.reasons || ["This studio matches your selected filters."]
+      };
+    })
+    .filter(Boolean) as Recommendation[];
+
+  return recommendations.length ? recommendations : fallback;
+}
+
 export async function POST(request: Request) {
-  const input = recommendationSchema.safeParse(await request.json());
-  if (!input.success) {
-    return NextResponse.json({ error: "Please complete the questionnaire." }, { status: 400 });
+  const json = await request.json();
+  const parsed = recommendationSchema.safeParse(json);
+
+  if (!parsed.success) {
+    return NextResponse.json({ message: "Please select your matching preferences." }, { status: 400 });
   }
 
   const studios = await getStudios();
+  const matchingStudios = filterStudiosForAnswers(studios, parsed.data);
+  const fallback = rankStudios(matchingStudios, parsed.data);
 
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json(deterministicMatch(studios, input.data));
+  if (!matchingStudios.length) {
+    return NextResponse.json({ source: "local", recommendations: [] });
+  }
+
+  if (!isOpenAIConfigured()) {
+    return NextResponse.json({ source: "local", recommendations: fallback });
   }
 
   try {
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
-    const response = await openai.chat.completions.create({
-      model,
+    const client = new OpenAI({ apiKey: openAIConfig.apiKey });
+    const completion = await client.chat.completions.create({
+      model: openAIConfig.model,
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
-          content:
-            "You are a premium pre-wedding concierge. Return strict JSON with keys summary and studioSlugs. Pick exactly three studio slugs from the catalog."
+          content: 'You are Dasoni, a Korea wedding photography concierge. Recommend only from the provided studios. Return only JSON: {"slugs":["studio-slug"],"notes":{"studio-slug":["short reason"]}}.'
         },
         {
           role: "user",
-          content: JSON.stringify({
-            questionnaire: input.data,
-            catalog: studios.map((studio) => ({
-              slug: studio.slug,
-              name: studio.name,
-              region: studio.region,
-              styles: studio.styles,
-              priceFromJpy: studio.priceFromJpy,
-              summary: studio.summary,
-              includedServices: studio.includedServices
-            }))
-          })
+          content: JSON.stringify({ answers: parsed.data, studios: matchingStudios.map((studio: Studio) => summarizeStudio(studio)) })
         }
       ]
     });
 
-    const parsed = JSON.parse(response.choices[0]?.message.content || "{}") as {
-      summary?: string;
-      studioSlugs?: string[];
-    };
-    const selected = (parsed.studioSlugs || [])
-      .map((slug) => studios.find((studio) => studio.slug === slug))
-      .filter(Boolean) as Studio[];
-
-    if (!parsed.summary || selected.length === 0) {
-      return NextResponse.json(deterministicMatch(studios, input.data));
+    const content = completion.choices[0]?.message?.content;
+    if (!content) {
+      return NextResponse.json({ source: "local", recommendations: fallback });
     }
 
-    return NextResponse.json({
-      summary: parsed.summary,
-      studios: selected.slice(0, 3)
-    });
+    return NextResponse.json({ source: "openai", recommendations: mergeOpenAIResult(matchingStudios, fallback, content) });
   } catch {
-    return NextResponse.json(deterministicMatch(studios, input.data));
+    return NextResponse.json({ source: "local", recommendations: fallback });
   }
 }

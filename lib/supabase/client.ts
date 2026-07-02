@@ -1,13 +1,28 @@
+"use client";
+
 import { createBrowserClient } from "@supabase/ssr";
-import type { Database } from "@/lib/supabase/types";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { hasSupabaseEnv, supabasePublicConfig } from "@/lib/config";
 
-export function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export { hasSupabaseEnv };
 
-  if (!url || !anonKey) {
-    throw new Error("Supabase browser environment variables are not configured.");
+function missingSupabaseClient(): SupabaseClient {
+  return null as unknown as SupabaseClient;
+}
+
+export function createBrowserSupabaseClient(): SupabaseClient {
+  if (!hasSupabaseEnv()) {
+    return missingSupabaseClient();
   }
 
-  return createBrowserClient<Database>(url, anonKey);
+  return createBrowserClient(
+    supabasePublicConfig.url,
+    supabasePublicConfig.anonKey
+  );
 }
+
+export function createClient(): SupabaseClient {
+  return createBrowserSupabaseClient();
+}
+
+export const createSupabaseBrowserClient = createBrowserSupabaseClient;

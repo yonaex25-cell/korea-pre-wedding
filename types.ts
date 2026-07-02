@@ -1,247 +1,92 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export const REGIONS = ["Seoul", "Jeju", "Busan"] as const;
+export type Region = (typeof REGIONS)[number];
 
-export type Database = {
-  public: {
-    Tables: {
-      studios: {
-        Row: {
-          id: string;
-          slug: string;
-          name: string;
-          region: string;
-          styles: string[];
-          budget: string;
-          price_from_jpy: number;
-          duration_hours: number;
-          summary: string;
-          description: string;
-          hero_image: string;
-          included_services: string[];
-          featured: boolean;
-          rating: number;
-          review_count: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          slug: string;
-          name: string;
-          region: string;
-          styles: string[];
-          budget: string;
-          price_from_jpy: number;
-          duration_hours: number;
-          summary: string;
-          description: string;
-          hero_image: string;
-          included_services: string[];
-          featured?: boolean;
-          rating?: number;
-          review_count?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          slug?: string;
-          name?: string;
-          region?: string;
-          styles?: string[];
-          budget?: string;
-          price_from_jpy?: number;
-          duration_hours?: number;
-          summary?: string;
-          description?: string;
-          hero_image?: string;
-          included_services?: string[];
-          featured?: boolean;
-          rating?: number;
-          review_count?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      studio_images: {
-        Row: {
-          id: string;
-          studio_id: string;
-          image_url: string;
-          alt: string;
-          sort_order: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          studio_id: string;
-          image_url: string;
-          alt: string;
-          sort_order?: number;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          studio_id?: string;
-          image_url?: string;
-          alt?: string;
-          sort_order?: number;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "studio_images_studio_id_fkey";
-            columns: ["studio_id"];
-            isOneToOne: false;
-            referencedRelation: "studios";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      reservations: {
-        Row: {
-          id: string;
-          studio_id: string | null;
-          name: string;
-          email: string;
-          line_id: string;
-          preferred_date: string;
-          message: string;
-          status: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          studio_id?: string | null;
-          name: string;
-          email: string;
-          line_id: string;
-          preferred_date: string;
-          message: string;
-          status?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          studio_id?: string | null;
-          name?: string;
-          email?: string;
-          line_id?: string;
-          preferred_date?: string;
-          message?: string;
-          status?: string;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "reservations_studio_id_fkey";
-            columns: ["studio_id"];
-            isOneToOne: false;
-            referencedRelation: "studios";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      reviews: {
-        Row: {
-          id: string;
-          studio_id: string | null;
-          customer_name: string;
-          location: string;
-          rating: number;
-          body: string;
-          image_url: string | null;
-          is_published: boolean;
-          published_at: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          studio_id?: string | null;
-          customer_name: string;
-          location: string;
-          rating: number;
-          body: string;
-          image_url?: string | null;
-          is_published?: boolean;
-          published_at?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          studio_id?: string | null;
-          customer_name?: string;
-          location?: string;
-          rating?: number;
-          body?: string;
-          image_url?: string | null;
-          is_published?: boolean;
-          published_at?: string;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "reviews_studio_id_fkey";
-            columns: ["studio_id"];
-            isOneToOne: false;
-            referencedRelation: "studios";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      faqs: {
-        Row: {
-          id: string;
-          studio_id: string | null;
-          category: string;
-          question: string;
-          answer: string;
-          sort_order: number;
-          is_published: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          studio_id?: string | null;
-          category: string;
-          question: string;
-          answer: string;
-          sort_order?: number;
-          is_published?: boolean;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          studio_id?: string | null;
-          category?: string;
-          question?: string;
-          answer?: string;
-          sort_order?: number;
-          is_published?: boolean;
-          created_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "faqs_studio_id_fkey";
-            columns: ["studio_id"];
-            isOneToOne: false;
-            referencedRelation: "studios";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+export const STYLES = [
+  "Classic",
+  "Editorial",
+  "Natural",
+  "Resort",
+  "Cinematic",
+  "Modern",
+  "Minimal",
+  "Hanbok"
+] as const;
+export type StudioStyle = (typeof STYLES)[number];
+
+export type BudgetFilter = "under300000" | "300000-500000" | "500000plus";
+
+export type StudioFilters = {
+  search?: string;
+  region?: string;
+  style?: string;
+  budget?: string;
+};
+
+export type StudioImage = any;
+
+export type Review = {
+  id: string;
+  studioId?: string | null;
+  studioName?: string;
+  studioSlug?: string;
+  customerName: string;
+  country: string;
+  rating: number;
+  content: string;
+  imageUrl?: string | null;
+  createdAt: string;
+  [key: string]: any;
+};
+
+export type FAQ = {
+  id: string;
+  studioId?: string | null;
+  category: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  [key: string]: any;
+};
+
+export type Studio = {
+  id: string;
+  slug: string;
+  name: string;
+  region: Region | string;
+  styles: string[];
+  images: StudioImage[];
+  description: string;
+  priceFrom: number;
+  rating: number;
+  featured?: boolean;
+  [key: string]: any;
+};
+
+export type Reservation = {
+  id: string;
+  studioId?: string | null;
+  studioSlug?: string | null;
+  name: string;
+  email: string;
+  lineId: string;
+  preferredDate: string;
+  message: string;
+  status: "new" | "contacted" | "confirmed" | "completed" | "cancelled";
+  createdAt: string;
+  [key: string]: any;
+};
+
+export type RecommendationAnswers = {
+  region: string;
+  style: string;
+  budget: string;
+  season: string;
+  priorities: string[];
+  mood: string;
+};
+
+export type Recommendation = {
+  studio: Studio;
+  score: number;
+  reasons: string[];
 };

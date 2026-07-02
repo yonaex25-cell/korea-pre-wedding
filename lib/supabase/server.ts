@@ -1,49 +1,92 @@
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/supabase/types";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createClient as createSupabaseJsClient, type SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { hasSupabaseEnv, hasSupabaseServiceRoleEnv, supabaseServerConfig } from "@/lib/config";
 
-export function hasSupabaseEnv() {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+export { hasSupabaseEnv, hasSupabaseServiceRoleEnv };
+
+type SupabaseCookieToSet = {
+  name: string;
+  value: string;
+  options?: CookieOptions;
+};
+
+function missingSupabaseClient(): SupabaseClient {
+  return null as unknown as SupabaseClient;
 }
 
-export function hasSupabaseAdminEnv() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+export function createAnonServerClient(token?: string | null): SupabaseClient {
+  if (!hasSupabaseEnv()) {
+    return missingSupabaseClient();
+  }
+
+  return createSupabaseJsClient(
+    supabaseServerConfig.url,
+    supabaseServerConfig.anonKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+      global: token
+        ? {
+            headers: {
+              Authorization: "Bearer " + token
+            }
+          }
+        : undefined
+    }
   );
 }
 
-export function createAnonServerClient(accessToken?: string) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !anonKey) {
-    throw new Error("Supabase environment variables are not configured.");
+export async function createServerSupabaseClient(): Promise<SupabaseClient> {
+  if (!hasSupabaseEnv()) {
+    return missingSupabaseClient();
   }
 
-  return createSupabaseClient<Database>(url, anonKey, {
-    global: accessToken
-      ? {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    supabaseServerConfig.url,
+    supabaseServerConfig.anonKey,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet: SupabaseCookieToSet[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }: SupabaseCookieToSet) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Server Components cannot always set cookies; middleware and route handlers can.
           }
         }
-      : undefined
-  });
+      }
+    }
+  );
 }
 
-export function createServiceRoleClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export async function createClient(): Promise<SupabaseClient> {
+  return await createServerSupabaseClient();
+}
 
-  if (!url || !serviceRoleKey) {
-    throw new Error("Supabase service role environment variables are not configured.");
+export function createServiceRoleClient(): SupabaseClient {
+  if (!hasSupabaseServiceRoleEnv()) {
+    return missingSupabaseClient();
   }
 
-  return createSupabaseClient<Database>(url, serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
+  return createSupabaseJsClient(
+    supabaseServerConfig.url,
+    supabaseServerConfig.serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
     }
-  });
+  );
 }
+
+export const createSupabaseServerClient = createServerSupabaseClient;

@@ -1,40 +1,40 @@
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter } from "next/font/google";
+import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap"
-});
+import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: {
-    default: "Korea Pre Wedding",
-    template: "%s | Korea Pre Wedding"
+    default: siteConfig.name,
+    template: "%s | Dasoni"
   },
-  description:
-    "A premium platform connecting Japanese couples with curated Korean wedding studios.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  description: siteConfig.description,
+  metadataBase: new URL(siteConfig.url),
+  icons: {
+    icon: "/logo.svg"
+  },
   openGraph: {
-    title: "Korea Pre Wedding",
-    description:
-      "Discover Korean wedding studios, compare packages, and reserve with Japanese-language support.",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=1200&q=85",
+        width: 1200,
+        height: 630,
+        alt: "Dasoni"
+      }
+    ],
+    locale: "en_US",
     type: "website"
   }
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body className={inter.variable}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

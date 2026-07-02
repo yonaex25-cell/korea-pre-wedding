@@ -1,216 +1,268 @@
 import type { FAQ, Review, Studio } from "@/lib/types";
 
-export const studios: Studio[] = [
+const createdAt = "2026-01-15T09:00:00.000Z";
+
+export const demoStudios: Studio[] = [
   {
-    id: "7b9a3a3c-0c85-4d11-82d7-1de9151032fb",
-    slug: "maison-de-lumiere-seoul",
-    name: "Maison de Lumiere Seoul",
+    id: "demo-maison-de-luna-seoul",
+    slug: "maison-de-luna-seoul",
+    name: "Maison de Luna Seoul",
     region: "Seoul",
-    styles: ["Classic", "Editorial", "Modern"],
-    budget: "Luxury",
-    priceFromJpy: 328000,
-    durationHours: 6,
-    summary: "Architectural Seoul studio with couture gowns, cinematic lighting, and concierge translation.",
-    description:
-      "Maison de Lumiere Seoul creates polished editorial portraits with refined studio sets, elegant gown styling, and a private Japanese-speaking coordinator from consultation through image selection.",
-    heroImage:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=85",
+    city: "Gangnam",
+    styles: ["Classic", "Editorial"],
+    budgetMin: 280000,
+    budgetMax: 620000,
+    priceFrom: 320000,
+    currency: "JPY",
+    description: "A refined Gangnam studio for elegant Korean wedding portraits with editorial lighting and graceful direction.",
+    longDescription: "Maison de Luna Seoul combines polished studio sets, premium dress styling, detailed hair and makeup, and calm posing guidance. It is a strong match for couples who want timeless Korean wedding photography with concierge support before and during the shoot.",
+    coverImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
     images: [
-      "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=85"
+      { id: "luna-1", url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85", alt: "Seoul studio wedding portrait", sortOrder: 0 },
+      { id: "luna-2", url: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=85", alt: "Elegant bridal styling", sortOrder: 1 },
+      { id: "luna-3", url: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=85", alt: "Classic couple portrait", sortOrder: 2 }
     ],
-    includedServices: [
-      "Two premium gowns and one tuxedo",
-      "Hair and makeup with pre-shoot consultation",
-      "Japanese-speaking coordinator",
-      "20 retouched high-resolution images",
-      "Private car transfer within central Seoul"
-    ],
-    faqs: [
-      {
-        id: "studio-faq-1",
-        category: "studio",
-        question: "Can we add a night city location?",
-        answer: "Yes. Night location coverage is available as an optional add-on and is best reserved four weeks ahead."
-      }
-    ],
+    services: ["Two dresses", "One tuxedo", "Hair and makeup", "Concierge coordination", "20 retouched images"],
+    destinations: ["Gangnam", "Seongsu", "Bukchon"],
     featured: true,
     rating: 4.9,
-    reviewCount: 126
+    reviewCount: 38,
+    reviews: [],
+    faqs: []
   },
   {
-    id: "be2d6f77-902d-4b48-b6a5-0aeacff40b31",
-    slug: "jeju-atelier-veil",
-    name: "Jeju Atelier Veil",
+    id: "demo-atelier-haneul-jeju",
+    slug: "atelier-haneul-jeju",
+    name: "Atelier Haneul Jeju",
     region: "Jeju",
-    styles: ["Natural", "Editorial"],
-    budget: "Signature",
-    priceFromJpy: 468000,
-    durationHours: 8,
-    summary: "A destination atelier for ocean cliffs, botanical gardens, and soft natural imagery.",
-    description:
-      "Jeju Atelier Veil specializes in relaxed destination sessions that pair island scenery with understated luxury. Their team handles weather planning, vehicle routing, and bilingual communication.",
-    heroImage:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=85",
+    city: "Aewol",
+    styles: ["Natural", "Resort"],
+    budgetMin: 360000,
+    budgetMax: 780000,
+    priceFrom: 420000,
+    currency: "JPY",
+    description: "A Jeju outdoor photography team for bright coastal, garden, and resort-inspired wedding sessions.",
+    longDescription: "Atelier Haneul Jeju focuses on sea light, open landscapes, soft garden scenes, and relaxed movement. The team helps plan routes, timing, transport, styling, and weather alternatives for destination wedding photography in Jeju.",
+    coverImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85",
     images: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=1200&q=85"
+      { id: "haneul-1", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85", alt: "Jeju coastline for wedding portraits", sortOrder: 0 },
+      { id: "haneul-2", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85", alt: "Jeju garden location", sortOrder: 1 },
+      { id: "haneul-3", url: "https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?auto=format&fit=crop&w=1200&q=85", alt: "Soft outdoor wedding scene", sortOrder: 2 }
     ],
-    includedServices: [
-      "One gown, one casual dress, and one tuxedo",
-      "Outdoor location permits",
-      "Weather backup planning",
-      "35 retouched high-resolution images",
-      "Full-day private van"
-    ],
-    faqs: [
-      {
-        id: "studio-faq-2",
-        category: "studio",
-        question: "What happens if the weather changes?",
-        answer: "The studio confirms a weather plan 48 hours before the shoot and can shift between coastal, garden, and indoor routes."
-      }
-    ],
+    services: ["Two dresses", "Hair and makeup", "Location vehicle", "Bouquet styling", "25 retouched images"],
+    destinations: ["Aewol Coast", "Seopjikoji", "Camellia Hill"],
     featured: true,
     rating: 4.8,
-    reviewCount: 98
+    reviewCount: 27,
+    reviews: [],
+    faqs: []
   },
   {
-    id: "26c7a3b7-3bc1-4554-a265-78c26f52ed40",
-    slug: "busan-golden-hour",
-    name: "Busan Golden Hour",
+    id: "demo-busan-lumiere-studio",
+    slug: "busan-lumiere-studio",
+    name: "Busan Lumiere Studio",
     region: "Busan",
-    styles: ["Natural", "Modern"],
-    budget: "Premium",
-    priceFromJpy: 248000,
-    durationHours: 5,
-    summary: "Elegant coastal portraits around Haeundae, Gwangan Bridge, and warm studio interiors.",
-    description:
-      "Busan Golden Hour is ideal for couples who want relaxed city-and-sea images with efficient planning, transparent packages, and a crisp modern finish.",
-    heroImage:
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=85",
+    city: "Haeundae",
+    styles: ["Cinematic", "Modern"],
+    budgetMin: 260000,
+    budgetMax: 560000,
+    priceFrom: 300000,
+    currency: "JPY",
+    description: "A cinematic Busan studio combining ocean horizons, city lights, and modern couple portraits.",
+    longDescription: "Busan Lumiere Studio is ideal for couples who want a mix of beach, bridge, skyline, and night-view photography. The schedule is designed for shorter trips while keeping the images polished and dramatic.",
+    coverImage: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85",
     images: [
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1494955870715-979ca4f13bf0?auto=format&fit=crop&w=1200&q=85"
+      { id: "lumiere-1", url: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85", alt: "Cinematic wedding styling", sortOrder: 0 },
+      { id: "lumiere-2", url: "https://images.unsplash.com/photo-1494955870715-979ca4f13bf0?auto=format&fit=crop&w=1200&q=85", alt: "Busan sea mood", sortOrder: 1 },
+      { id: "lumiere-3", url: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1200&q=85", alt: "Modern wedding couple", sortOrder: 2 }
     ],
-    includedServices: [
-      "One gown and one tuxedo",
-      "Studio plus one outdoor location",
-      "Korean and Japanese itinerary guide",
-      "15 retouched high-resolution images",
-      "Digital delivery within five weeks"
-    ],
-    faqs: [
-      {
-        id: "studio-faq-3",
-        category: "studio",
-        question: "Is this package good for first-time Korea travelers?",
-        answer: "Yes. It is designed around simple transportation and compact timing for couples on a short Busan trip."
-      }
-    ],
+    services: ["One dress", "One tuxedo", "Hair and makeup", "Night-view session", "18 retouched images"],
+    destinations: ["Haeundae", "Gwangalli", "Dongbaek Island"],
     featured: true,
     rating: 4.7,
-    reviewCount: 73
+    reviewCount: 22,
+    reviews: [],
+    faqs: []
   },
   {
-    id: "d8c31f2e-a73f-42de-b99c-dcd7547c75e7",
-    slug: "hanbok-house-namsan",
-    name: "Hanbok House Namsan",
+    id: "demo-minuette-seongsu",
+    slug: "minuette-seongsu",
+    name: "Minuette Seongsu",
     region: "Seoul",
-    styles: ["Hanbok", "Classic"],
-    budget: "Premium",
-    priceFromJpy: 286000,
-    durationHours: 5,
-    summary: "Refined hanbok portraits with palace-inspired sets and Namsan outdoor options.",
-    description:
-      "Hanbok House Namsan blends traditional silhouettes with soft contemporary retouching for couples who want Korea-specific imagery without a costume-like finish.",
-    heroImage:
-      "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=1600&q=85",
+    city: "Seongsu",
+    styles: ["Minimal", "Modern"],
+    budgetMin: 220000,
+    budgetMax: 480000,
+    priceFrom: 260000,
+    currency: "JPY",
+    description: "A clean white-set studio in Seongsu for minimal, modern, and naturally polished portraits.",
+    longDescription: "Minuette Seongsu uses calm lighting, clean interiors, and simple composition to create refined images with a contemporary Korean mood. It works well for couples who prefer understated elegance.",
+    coverImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85",
     images: [
-      "https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1513278974582-3e1b4a4fa21e?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=85"
+      { id: "minuette-1", url: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85", alt: "Minimal Seoul wedding set", sortOrder: 0 },
+      { id: "minuette-2", url: "https://images.unsplash.com/photo-1482575832494-771f74bf6857?auto=format&fit=crop&w=1200&q=85", alt: "Clean bridal portrait", sortOrder: 1 }
     ],
-    includedServices: [
-      "Two premium hanbok looks",
-      "Traditional hair styling",
-      "Palace-inspired indoor sets",
-      "12 retouched high-resolution images",
-      "Japanese style consultation"
+    services: ["One dress", "Hair and makeup", "Indoor studio set", "15 retouched images"],
+    destinations: ["Seongsu", "Seoul Forest"],
+    featured: false,
+    rating: 4.6,
+    reviewCount: 18,
+    reviews: [],
+    faqs: []
+  },
+  {
+    id: "demo-royal-hanbok-house",
+    slug: "royal-hanbok-house",
+    name: "Royal Hanbok House",
+    region: "Seoul",
+    city: "Jongno",
+    styles: ["Hanbok", "Classic"],
+    budgetMin: 240000,
+    budgetMax: 520000,
+    priceFrom: 290000,
+    currency: "JPY",
+    description: "A classic Seoul studio for hanbok styling and palace-inspired wedding photography.",
+    longDescription: "Royal Hanbok House is built for couples who want Korean cultural styling, graceful hanbok portraits, and historic Seoul backdrops. The team supports styling, location timing, and respectful palace-area photography planning.",
+    coverImage: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1400&q=85",
+    images: [
+      { id: "hanbok-1", url: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1400&q=85", alt: "Traditional wedding styling", sortOrder: 0 },
+      { id: "hanbok-2", url: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?auto=format&fit=crop&w=1200&q=85", alt: "Historic palace mood", sortOrder: 1 }
     ],
-    faqs: [],
+    services: ["Two hanbok looks", "Hair and makeup", "Palace-area session", "Concierge guidance", "18 retouched images"],
+    destinations: ["Bukchon", "Gyeongbokgung", "Ikseon-dong"],
     featured: false,
     rating: 4.8,
-    reviewCount: 44
+    reviewCount: 31,
+    reviews: [],
+    faqs: []
+  },
+  {
+    id: "demo-oro-jeju-garden",
+    slug: "oro-jeju-garden",
+    name: "Oro Jeju Garden",
+    region: "Jeju",
+    city: "Seogwipo",
+    styles: ["Natural", "Classic"],
+    budgetMin: 330000,
+    budgetMax: 690000,
+    priceFrom: 380000,
+    currency: "JPY",
+    description: "A Jeju garden team for floral, stone-wall, and coastal wedding photography routes.",
+    longDescription: "Oro Jeju Garden plans soft, romantic routes through seasonal flowers, Jeju stone textures, and open coastal scenery. It is a comfortable choice for couples traveling with family or seeking a gentle outdoor mood.",
+    coverImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?auto=format&fit=crop&w=1400&q=85",
+    images: [
+      { id: "oro-1", url: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?auto=format&fit=crop&w=1400&q=85", alt: "Garden wedding flowers", sortOrder: 0 },
+      { id: "oro-2", url: "https://images.unsplash.com/photo-1460364157752-926555421a7e?auto=format&fit=crop&w=1200&q=85", alt: "Jeju floral location", sortOrder: 1 }
+    ],
+    services: ["Two dresses", "Hair and makeup", "Outdoor session", "Family travel guidance", "22 retouched images"],
+    destinations: ["Seogwipo", "Camellia Hill", "Sanbangsan"],
+    featured: false,
+    rating: 4.7,
+    reviewCount: 16,
+    reviews: [],
+    faqs: []
   }
 ];
 
-export const reviews: Review[] = [
+export const demoReviews: Review[] = [
   {
     id: "review-1",
-    studioId: studios[0].id,
-    customerName: "Ami & Ren",
-    location: "Tokyo",
+    studioId: "demo-maison-de-luna-seoul",
+    studioName: "Maison de Luna Seoul",
+    studioSlug: "maison-de-luna-seoul",
+    customerName: "Mika & Ren",
+    country: "Japan",
     rating: 5,
-    body:
-      "The coordinator understood exactly what Japanese couples worry about. Dress fitting, translation, and image selection were calm and beautifully organized.",
-    publishedAt: "2026-02-14"
+    content: "Dasoni helped us compare styles clearly, and the Seoul studio felt calm from the first consultation to the final gallery.",
+    imageUrl: "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80",
+    createdAt
   },
   {
     id: "review-2",
-    studioId: studios[1].id,
-    customerName: "Mika & Sho",
-    location: "Osaka",
+    studioId: "demo-atelier-haneul-jeju",
+    studioName: "Atelier Haneul Jeju",
+    studioSlug: "atelier-haneul-jeju",
+    customerName: "Aoi & Kenta",
+    country: "Japan",
     rating: 5,
-    body:
-      "Jeju felt like a honeymoon and a photoshoot in one. The team moved quickly when the wind changed and the final photos were graceful.",
-    publishedAt: "2026-03-22"
+    content: "The Jeju route was smooth, beautiful, and easy to understand. We loved having photography and travel details handled together.",
+    imageUrl: "https://images.unsplash.com/photo-1501901609772-df0848060b33?auto=format&fit=crop&w=800&q=80",
+    createdAt
   },
   {
     id: "review-3",
-    studioId: studios[2].id,
-    customerName: "Yui & Haruto",
-    location: "Fukuoka",
+    studioId: "demo-busan-lumiere-studio",
+    studioName: "Busan Lumiere Studio",
+    studioSlug: "busan-lumiere-studio",
+    customerName: "Yuri & Sho",
+    country: "Japan",
     rating: 5,
-    body:
-      "Busan was easy from Japan, and the package had no confusing surprises. We loved the clean modern color grading.",
-    publishedAt: "2026-04-09"
+    content: "Busan gave us both ocean and city-night images. The recommendations matched our mood and budget very well.",
+    imageUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    createdAt
   }
 ];
 
-export const faqs: FAQ[] = [
+export const demoFaqs: FAQ[] = [
   {
     id: "faq-1",
-    category: "general",
-    question: "Can Japanese customers reserve without speaking Korean?",
-    answer:
-      "Yes. Korea Pre Wedding coordinates in Japanese and English, and partner studios provide translated planning notes before the shoot."
+    category: "booking",
+    question: "How early should we book a Korean wedding photography studio?",
+    answer: "For spring and autumn, three to four months ahead is ideal. For quieter seasons, two months is usually workable, and you can start with a consultation before flights are finalized.",
+    sortOrder: 1
   },
   {
     id: "faq-2",
-    category: "reservation",
-    question: "How early should we reserve a studio?",
-    answer:
-      "For Seoul studios, reserve 8 to 12 weeks ahead. For Jeju and peak cherry blossom or autumn dates, 12 to 20 weeks is recommended."
+    category: "travel",
+    question: "Can Dasoni support international couples?",
+    answer: "Yes. Dasoni is designed as a Korea wedding photography concierge, helping couples compare studios, locations, schedules, and communication details.",
+    sortOrder: 2
   },
   {
     id: "faq-3",
-    category: "travel",
-    question: "Do packages include flights and hotels?",
-    answer:
-      "Photo packages do not include flights or hotels. The concierge team can share recommended districts and shooting-day transport guidance."
+    category: "payment",
+    question: "What is usually included in the listed price?",
+    answer: "Most listed packages include styling, photography, basic retouching, and selected outfit options. Transport, premium dresses, or extra retouching may vary by studio.",
+    sortOrder: 3
   },
   {
     id: "faq-4",
-    category: "general",
-    question: "Can we request a specific style before booking?",
-    answer:
-      "Yes. Use the AI recommendation questionnaire or contact form to share your preferred mood, budget, and season."
+    category: "weather",
+    question: "What happens if it rains on an outdoor shoot day?",
+    answer: "Each studio has its own policy. Common options include schedule adjustment, indoor studio alternatives, or changing the location route when possible.",
+    sortOrder: 4
   }
 ];
 
-export const regions = ["Seoul", "Jeju", "Busan"] as const;
-export const styles = ["Classic", "Modern", "Natural", "Editorial", "Hanbok"] as const;
+export const destinations = [
+  {
+    name: "Seoul",
+    label: "Seoul",
+    description: "Studio polish, city walks, hanbok styling, and trend-forward wedding photography in one destination.",
+    image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    name: "Jeju",
+    label: "Jeju Island",
+    description: "Ocean, fields, gardens, volcanic textures, and soft natural light for destination photography.",
+    image: "https://images.unsplash.com/photo-1535189043414-47a3c49a0bed?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    name: "Busan",
+    label: "Busan",
+    description: "Haeundae, Gwangalli, bridges, skyline, and cinematic coastal city wedding photography.",
+    image: "https://images.unsplash.com/photo-1605335425719-01481394c207?auto=format&fit=crop&w=1200&q=85"
+  }
+];
+
+export function attachDemoRelations(studios: Studio[]) {
+  return studios.map((studio: Studio) => ({
+    ...studio,
+    reviews: demoReviews.filter((review: Review) => review.studioSlug === studio.slug),
+    faqs: demoFaqs
+  }));
+}
+
+export const studios = demoStudios;
+export const reviews = demoReviews;
+export const faqs = demoFaqs;

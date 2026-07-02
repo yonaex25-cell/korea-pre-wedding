@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getFAQs, getReviews, getStudios } from "@/lib/repository";
-
+import type { Review } from "@/lib/types";
 export default async function HomePage() {
   const [studios, reviews, faqs] = await Promise.all([getStudios(), getReviews(), getFAQs()]);
   const featured = studios.filter((studio) => studio.featured).slice(0, 3);
@@ -67,7 +67,7 @@ export default async function HomePage() {
           <Button asChild variant="outline"><Link href="/studios">View all studios</Link></Button>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featured.map((studio, index) => <StudioCard key={studio.id} studio={studio} priority={index === 0} />)}
+          {featured.map((studio, index) => <StudioCard key={studio.id} studio={studio}  />)}
         </div>
       </section>
 
@@ -115,7 +115,7 @@ export default async function HomePage() {
             <Button asChild variant="outline"><Link href="/reviews">Read reviews</Link></Button>
           </div>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {reviews.slice(0, 3).map((review) => <ReviewCard key={review.id} review={review} />)}
+            {reviews.slice(0, 3).map((review: Review) => <ReviewCard key={review.id} review={review} />)}
           </div>
         </div>
       </section>

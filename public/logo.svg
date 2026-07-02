@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Dasoni logo">
+  <rect width="180" height="180" rx="36" fill="#ffffff"/>
+  <circle cx="90" cy="90" r="76" fill="#fff1f4" stroke="#ff385c" stroke-width="8"/>
+  <path d="M58 105c10 19 29 30 32 31 3-1 22-12 32-31 8-15 4-34-12-39-9-3-17 1-20 7-3-6-11-10-20-7-16 5-20 24-12 39Z" fill="#ff385c"/>
+  <text x="90" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#111111">D</text>
+  <text x="90" y="153" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111111">DASONI</text>
+</svg>

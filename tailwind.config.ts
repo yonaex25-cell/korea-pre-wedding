@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
-import animate from "tailwindcss-animate";
 
-const config: Config = {
+const config = {
   darkMode: ["class"],
   content: [
     "./app/**/*.{ts,tsx}",
@@ -41,14 +40,15 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))"
         },
         gold: {
-          50: "#fff9e6",
-          100: "#faedbd",
-          400: "#c99a2e",
-          500: "#a87d1d",
-          700: "#725112"
+          50: "#fff1f4",
+          100: "#ffe2e8",
+          300: "#ff8aa0",
+          500: "#ff385c",
+          700: "#d7043d"
         },
-        rosewood: "#7c4f58",
-        sage: "#8a9a7b"
+        champagne: "#fff7f8",
+        sage: "#6b7280",
+        ink: "#111111"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -56,24 +56,26 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)"
       },
       boxShadow: {
-        luxury: "0 24px 80px rgba(39, 31, 24, 0.12)",
-        glow: "0 18px 48px rgba(168, 125, 29, 0.18)"
-      },
-      fontFamily: {
-        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"]
+        soft: "0 18px 48px rgba(17, 17, 17, 0.08)",
+        gold: "0 16px 42px rgba(255, 56, 92, 0.18)"
       },
       keyframes: {
-        "fade-up": {
+        reveal: {
           "0%": { opacity: "0", transform: "translateY(18px)" },
           "100%": { opacity: "1", transform: "translateY(0)" }
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" }
         }
       },
       animation: {
-        "fade-up": "fade-up 700ms ease-out both"
+        reveal: "reveal 700ms ease both",
+        float: "float 5s ease-in-out infinite"
       }
     }
   },
-  plugins: [animate]
-};
+  plugins: []
+} satisfies Config;
 
 export default config;
