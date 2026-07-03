@@ -149,10 +149,9 @@ export const demoStudios: Studio[] = [
     currency: "JPY",
     description: "A Jeju garden team for floral, stone-wall, and coastal wedding photography routes.",
     longDescription: "Oro Jeju Garden plans soft, romantic routes through seasonal flowers, Jeju stone textures, and open coastal scenery. It is a comfortable choice for couples traveling with family or seeking a gentle outdoor mood.",
-    coverImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",
     images: [
-      { id: "oro-1", url: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?auto=format&fit=crop&w=1400&q=85", alt: "Garden wedding flowers", sortOrder: 0 },
-      { id: "oro-2", url: "https://images.unsplash.com/photo-1460364157752-926555421a7e?auto=format&fit=crop&w=1200&q=85", alt: "Jeju floral location", sortOrder: 1 }
+{ id: "oro-1", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85", alt: "Jeju garden wedding location", sortOrder: 0 },      { id: "oro-2", url: "https://images.unsplash.com/photo-1460364157752-926555421a7e?auto=format&fit=crop&w=1200&q=85", alt: "Jeju floral location", sortOrder: 1 }
     ],
     services: ["Two dresses", "Hair and makeup", "Outdoor session", "Family travel guidance", "22 retouched images"],
     destinations: ["Seogwipo", "Camellia Hill", "Sanbangsan"],
