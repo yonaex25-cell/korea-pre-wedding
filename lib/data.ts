@@ -251,7 +251,7 @@ export const destinations = [
     name: "Busan",
     label: "Busan",
     description: "Haeundae, Gwangalli, bridges, skyline, and cinematic coastal city wedding photography.",
-    image: "https://images.unsplash.com/photo-1605335425719-01481394c207?auto=format&fit=crop&w=1200&q=85"
+    image: "https://images.unsplash.com/photo-1638591751482-1a7d27fcea15?auto=format&fit=crop&w=1200&q=85"
   }
 ];
 
