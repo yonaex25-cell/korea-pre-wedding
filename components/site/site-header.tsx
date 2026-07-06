@@ -4,30 +4,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Globe2, Menu, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { languages, type LanguageCode, useLanguage } from "@/components/providers/language-provider";
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/studios", label: "Studios" },
-  { href: "/ai-recommendation", label: "AI Match" },
-  { href: "/reviews", label: "Reviews" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" }
-];
-
-const languages = [
-  { code: "KR", label: "한국어" },
-  { code: "JP", label: "日本語" },
-  { code: "EN", label: "English" }
+  { href: "/", key: "home" },
+  { href: "/studios", key: "studios" },
+  { href: "/ai-recommendation", key: "aiMatch" },
+  { href: "/reviews", key: "reviews" },
+  { href: "/faq", key: "faq" },
+  { href: "/contact", key: "contact" }
 ] as const;
-
-type LanguageCode = (typeof languages)[number]["code"];
 
 export function SiteHeader() {
   const pathname = usePathname();
   const languageMenuRef = useRef<HTMLDivElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [language, setLanguage] = useState<LanguageCode>("JP");
+  const { language, setLanguage, text } = useLanguage();
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -79,7 +72,7 @@ export function SiteHeader() {
                 (isActive(item.href) ? "text-neutral-950" : "text-neutral-500")
               }
             >
-              {item.label}
+              {text.nav[item.key]}
             </Link>
           ))}
         </nav>
@@ -124,7 +117,7 @@ export function SiteHeader() {
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#ff385c] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e03150]"
           >
             <Sparkles className="h-4 w-4" aria-hidden />
-            Consultation
+            {text.nav.consultation}
           </Link>
         </div>
 
@@ -152,14 +145,14 @@ export function SiteHeader() {
                   (isActive(item.href) ? "bg-rose-50 text-neutral-950" : "text-neutral-600")
                 }
               >
-                {item.label}
+                {text.nav[item.key]}
               </Link>
             ))}
 
             <div className="grid gap-2 rounded-xl border border-neutral-200 bg-neutral-50 p-3">
               <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500">
                 <Globe2 className="h-4 w-4" aria-hidden />
-                Language
+                {text.nav.language}
               </p>
 
               <div className="grid grid-cols-3 gap-2">
@@ -199,7 +192,7 @@ export function SiteHeader() {
               onClick={() => setMobileOpen(false)}
               className="rounded-lg bg-[#ff385c] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#e03150]"
             >
-              Consultation
+              {text.nav.consultation}
             </Link>
           </nav>
         </div>

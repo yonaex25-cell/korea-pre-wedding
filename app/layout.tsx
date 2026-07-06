@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { LanguageProvider } from "@/components/providers/language-provider";
 import { SiteHeader } from "@/components/site/site-header";
 import "./globals.css";
 
@@ -15,8 +16,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <SiteHeader />
-        {children}
+        <LanguageProvider>
+          <SiteHeader />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
