@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/format";
+import { getLocalizedReview } from "@/lib/public-content-translations";
 import type { Review } from "@/lib/types";
 
 type ReviewCardProps = {
@@ -10,7 +14,10 @@ type ReviewCardProps = {
 };
 
 export function ReviewCard({ review }: ReviewCardProps) {
-  const formattedDate = formatDate(review.createdAt);
+  const { language } = useLanguage();
+  const localizedReview = getLocalizedReview(review, language);
+  const dateLocale = language === "JP" ? "ja-JP" : language === "KR" ? "ko-KR" : "en-US";
+  const formattedDate = formatDate(review.createdAt, dateLocale);
 
   return (
     <Card className="overflow-hidden">
@@ -31,7 +38,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
             <Star key={index} className="size-4 fill-gold-500" aria-hidden />
           ))}
         </div>
-        <p className="text-sm leading-7 text-muted-foreground">{review.content}</p>
+        <p className="text-sm leading-7 text-muted-foreground">{localizedReview.content}</p>
         <div>
           <p className="font-semibold text-ink">{review.customerName}</p>
           {review.studioSlug ? (
@@ -41,6 +48,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           ) : (
             <p className="text-sm text-muted-foreground">{review.studioName}</p>
           )}
+          <p className="text-xs text-muted-foreground">{localizedReview.country}</p>
           {formattedDate ? <p className="text-xs text-muted-foreground">{formattedDate}</p> : null}
         </div>
       </CardContent>

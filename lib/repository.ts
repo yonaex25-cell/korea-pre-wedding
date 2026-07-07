@@ -5,9 +5,33 @@ import {
   studios as seedStudios
 } from "@/lib/data";
 import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server";
-import type { FAQ, Reservation, Review, Studio, StudioFilters } from "@/lib/types";
+import type { FAQ, Reservation, Review, Studio, StudioFilters, StudioImage } from "@/lib/types";
 
 type SupabaseClientLike = Awaited<ReturnType<typeof createServerSupabaseClient>>;
+type DataRow = Record<string, unknown>;
+
+function asRow(value: unknown): DataRow {
+  return value && typeof value === "object" ? value as DataRow : {};
+}
+
+function asRows(value: unknown): DataRow[] {
+  return Array.isArray(value) ? value.map((item) => asRow(item)) : [];
+}
+
+function readString(row: DataRow, key: string, fallback = ""): string {
+  const value = row[key];
+  return value === null || value === undefined ? fallback : String(value);
+}
+
+function readNullableString(row: DataRow, key: string): string | null {
+  const value = row[key];
+  return value === null || value === undefined || value === "" ? null : String(value);
+}
+
+function readNumber(row: DataRow, key: string, fallback = 0): number {
+  const value = Number(row[key]);
+  return Number.isFinite(value) ? value : fallback;
+}
 
 function normalizeList(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -21,108 +45,162 @@ function normalizeList(value: unknown): string[] {
   return [];
 }
 
+function normalizeDateString(value: unknown): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? "" : value.toISOString();
+  }
+
+  const date = new Date(String(value));
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+}
+
 function normalizeImageUrl(image: unknown): string {
   if (typeof image === "string") {
     return image;
   }
 
-  if (image && typeof image === "object" && "url" in image) {
-    return String((image as { url?: string }).url || "");
+  const row = asRow(image);
+  return readString(row, "url");
+}
+
+function mapStudioImage(value: unknown, fallbackName: string): StudioImage | null {
+  if (typeof value === "string") {
+    return value ? { id: value, url: value, alt: fallbackName, sortOrder: 0 } : null;
   }
 
-  return "";
-}
+  const row = asRow(value);
+  const url = readString(row, "url");
 
-export function mapReview(row: any): Review {
+  if (!url) {
+    return null;
+  }
+
   return {
-    id: String(row.id),
-    studioId: row.studio_id ?? row.studioId ?? null,
-    studioName: row.studios?.name ?? row.studioName ?? row.studio_name,
-    studioSlug: row.studios?.slug ?? row.studioSlug ?? row.studio_slug,
-    customerName: row.customer_name ?? row.customerName ?? row.name ?? "Guest",
-    country: row.country ?? "Japan",
-    rating: Number(row.rating ?? 5),
-    content: row.content ?? row.comment ?? "",
-    imageUrl: row.image_url ?? row.imageUrl ?? null,
-    createdAt: row.created_at ?? row.createdAt ?? new Date(0).toISOString()
+    id: readString(row, "id", url),
+    url,
+    alt: readString(row, "alt", readString(row, "alt_text", fallbackName)),
+    sortOrder: readNumber(row, "sortOrder", readNumber(row, "sort_order", 0))
   };
 }
 
-export function mapFaq(row: any): FAQ {
+export function mapReview(input: unknown): Review {
+  const row = asRow(input);
+  const studio = asRow(row.studios);
+
   return {
-    id: String(row.id),
-    studioId: row.studio_id ?? row.studioId ?? null,
-    category: row.category ?? "general",
-    question: row.question ?? "",
-    answer: row.answer ?? "",
-    sortOrder: Number(row.sort_order ?? row.sortOrder ?? 0)
+    id: readString(row, "id"),
+    studioId: readNullableString(row, "studio_id") ?? readNullableString(row, "studioId"),
+    studioName: readString(studio, "name", readString(row, "studioName", readString(row, "studio_name"))),
+    studioSlug: readString(studio, "slug", readString(row, "studioSlug", readString(row, "studio_slug"))),
+    customerName: readString(row, "customer_name", readString(row, "customerName", readString(row, "name", "Guest"))),
+    country: readString(row, "country", readString(row, "location", "Japan")),
+    location: readString(row, "location", readString(row, "country", "Japan")),
+    rating: readNumber(row, "rating", 5),
+    content: readString(row, "content", readString(row, "comment", readString(row, "body"))),
+    body: readString(row, "body", readString(row, "content", readString(row, "comment"))),
+    imageUrl: readNullableString(row, "image_url") ?? readNullableString(row, "imageUrl"),
+    createdAt: normalizeDateString(row.created_at ?? row.createdAt),
+    publishedAt: normalizeDateString(row.published_at ?? row.publishedAt ?? row.created_at ?? row.createdAt)
   };
 }
 
-export function mapReservation(row: any): Reservation {
+export function mapFaq(input: unknown): FAQ {
+  const row = asRow(input);
+
   return {
-    id: String(row.id),
-    studioId: row.studio_id ?? row.studioId ?? null,
-    studioSlug: row.studio_slug ?? row.studioSlug ?? null,
-    name: row.name ?? "",
-    email: row.email ?? "",
-    lineId: row.line_id ?? row.lineId ?? "",
-    preferredDate: row.preferred_date ?? row.preferredDate ?? "",
-    message: row.message ?? "",
-    status: row.status ?? "new",
-    createdAt: row.created_at ?? row.createdAt ?? new Date(0).toISOString()
+    id: readString(row, "id"),
+    studioId: readNullableString(row, "studio_id") ?? readNullableString(row, "studioId"),
+    category: readString(row, "category", "general"),
+    question: readString(row, "question"),
+    answer: readString(row, "answer"),
+    sortOrder: readNumber(row, "sort_order", readNumber(row, "sortOrder", 0))
   };
 }
 
-export function mapStudio(row: any): Studio {
-  const relatedImages = Array.isArray(row.studio_images) ? row.studio_images : [];
+export function mapReservation(input: unknown): Reservation {
+  const row = asRow(input);
+  const status = readString(row, "status", "new") as Reservation["status"];
+
+  return {
+    id: readString(row, "id"),
+    studioId: readNullableString(row, "studio_id") ?? readNullableString(row, "studioId"),
+    studioSlug: readNullableString(row, "studio_slug") ?? readNullableString(row, "studioSlug"),
+    name: readString(row, "name"),
+    email: readString(row, "email"),
+    lineId: readString(row, "line_id", readString(row, "lineId")),
+    preferredDate: readString(row, "preferred_date", readString(row, "preferredDate")),
+    message: readString(row, "message"),
+    status,
+    createdAt: normalizeDateString(row.created_at ?? row.createdAt)
+  };
+}
+
+export function mapStudio(input: unknown): Studio {
+  const row = asRow(input);
+  const relatedImages = asRows(row.studio_images);
   const imageObjects = relatedImages
     .slice()
-    .sort((a: any, b: any) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0))
-    .map((image: any) => ({
-      id: String(image.id ?? image.url),
-      url: image.url,
-      alt: image.alt_text ?? image.alt ?? row.name,
-      sortOrder: Number(image.sort_order ?? image.sortOrder ?? 0)
-    }))
-    .filter((image: { url?: string }) => Boolean(image.url));
+    .sort((a, b) => readNumber(a, "sort_order") - readNumber(b, "sort_order"))
+    .map((image) => mapStudioImage(image, readString(row, "name")))
+    .filter((image): image is StudioImage => Boolean(image));
 
-  const existingImages = Array.isArray(row.images) ? row.images : [];
+  const existingImages = Array.isArray(row.images)
+    ? row.images
+        .map((image) => mapStudioImage(image, readString(row, "name")))
+        .filter((image): image is StudioImage => Boolean(image))
+    : [];
   const firstExistingImageUrl = normalizeImageUrl(existingImages[0]);
-  const coverImage = row.cover_image_url ?? row.coverImage ?? firstExistingImageUrl ?? "";
-  const reviews = Array.isArray(row.reviews) ? row.reviews.map((review: any) => mapReview(review)) : [];
-  const faqs = Array.isArray(row.faqs) ? row.faqs.map((faq: any) => mapFaq(faq)) : [];
-  const priceFrom = Number(row.price_from ?? row.priceFrom ?? 0);
+  const coverImage = readString(row, "cover_image_url", readString(row, "coverImage", firstExistingImageUrl));
+  const reviews = asRows(row.reviews).map((review) => mapReview(review));
+  const faqs = asRows(row.faqs).map((faq) => mapFaq(faq));
+  const priceFrom = readNumber(row, "price_from", readNumber(row, "priceFrom", 0));
+  const budget = readString(row, "budget", "Premium");
+  const priceFromJpy = readNumber(row, "price_from_jpy", readNumber(row, "priceFromJpy", priceFrom));
+  const durationHours = readNumber(row, "duration_hours", readNumber(row, "durationHours", 0));
+  const summary = readString(row, "summary", readString(row, "description"));
+  const heroImage = readString(row, "hero_image", readString(row, "heroImage", coverImage));
+  const includedServices = normalizeList(row.included_services ?? row.includedServices ?? row.services);
+  const fallbackImage = coverImage
+    ? [{ id: readString(row, "id") + "-cover", url: coverImage, alt: readString(row, "name", "Studio image"), sortOrder: 0 }]
+    : [];
 
   return {
-    id: String(row.id),
-    slug: row.slug ?? "",
-    name: row.name ?? "",
-    region: row.region ?? "Seoul",
-    city: row.city ?? "",
+    id: readString(row, "id"),
+    slug: readString(row, "slug"),
+    name: readString(row, "name"),
+    region: readString(row, "region", "Seoul"),
+    city: readString(row, "city"),
     styles: normalizeList(row.styles),
-    budgetMin: Number(row.budget_min ?? row.budgetMin ?? priceFrom),
-    budgetMax: Number(row.budget_max ?? row.budgetMax ?? priceFrom),
+    budget,
+    budgetMin: readNumber(row, "budget_min", readNumber(row, "budgetMin", priceFrom)),
+    budgetMax: readNumber(row, "budget_max", readNumber(row, "budgetMax", priceFrom)),
     priceFrom,
-    currency: row.currency ?? "JPY",
-    description: row.description ?? "",
-    longDescription: row.long_description ?? row.longDescription ?? row.description ?? "",
+    priceFromJpy,
+    durationHours,
+    currency: readString(row, "currency", "JPY"),
+    description: readString(row, "description"),
+    summary,
+    longDescription: readString(row, "long_description", readString(row, "longDescription", readString(row, "description"))),
     coverImage,
-    images: imageObjects.length
-      ? imageObjects
-      : existingImages.length
-        ? existingImages
-        : coverImage
-          ? [{ id: String(row.id) + "-cover", url: coverImage, alt: row.name ?? "Studio image", sortOrder: 0 }]
-          : [],
-    services: normalizeList(row.included_services ?? row.services),
+    heroImage,
+    images: imageObjects.length ? imageObjects : existingImages.length ? existingImages : fallbackImage,
+    includedServices,
+    services: includedServices,
     destinations: normalizeList(row.destinations),
     featured: Boolean(row.featured),
-    rating: Number(row.rating ?? (reviews.length ? reviews.reduce((sum: number, review: Review) => sum + review.rating, 0) / reviews.length : 4.8)),
-    reviewCount: Number(row.review_count ?? row.reviewCount ?? reviews.length),
+    rating: readNumber(
+      row,
+      "rating",
+      reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 4.8
+    ),
+    reviewCount: readNumber(row, "review_count", readNumber(row, "reviewCount", reviews.length)),
     reviews,
     faqs
-  } as Studio;
+  };
 }
 
 function matchesBudget(studio: Studio, budget?: string) {
@@ -179,7 +257,7 @@ export async function getStudios(filters: StudioFilters = {}) {
     return applyStudioFilters(seedStudios.map((studio: Studio) => mapStudio(studio)), filters);
   }
 
-  return applyStudioFilters((data as any[]).map((row: any) => mapStudio(row)), filters);
+  return applyStudioFilters(data.map((row: unknown) => mapStudio(row)), filters);
 }
 
 export async function getFeaturedStudios(limit = 3) {
@@ -224,7 +302,7 @@ export async function getReviews() {
     return seedReviews.map((review: Review) => mapReview(review));
   }
 
-  return (data as any[]).map((row: any) => mapReview(row));
+  return data.map((row: unknown) => mapReview(row));
 }
 
 export async function getFaqs() {
@@ -244,7 +322,7 @@ export async function getFaqs() {
     return seedFaqs.map((faq: FAQ) => mapFaq(faq));
   }
 
-  return (data as any[]).map((row: any) => mapFaq(row));
+  return data.map((row: unknown) => mapFaq(row));
 }
 
 export async function getFAQs() {
@@ -273,7 +351,7 @@ export async function getReservations() {
     return [] as Reservation[];
   }
 
-  return (data as any[]).map((row: any) => mapReservation(row));
+  return data.map((row: unknown) => mapReservation(row));
 }
 
 export async function createReservation(input: Omit<Reservation, "id" | "status" | "createdAt">) {

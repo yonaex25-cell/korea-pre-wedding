@@ -22,7 +22,13 @@ export type StudioFilters = {
   budget?: string;
 };
 
-export type StudioImage = any;
+export type StudioImage = {
+  id: string;
+  url: string;
+  alt: string;
+  sortOrder?: number;
+  [key: string]: unknown;
+};
 
 export type Review = {
   id: string;
@@ -31,11 +37,14 @@ export type Review = {
   studioSlug?: string;
   customerName: string;
   country: string;
+  location?: string;
   rating: number;
   content: string;
+  body?: string;
   imageUrl?: string | null;
   createdAt: string;
-  [key: string]: any;
+  publishedAt?: string | null;
+  [key: string]: unknown;
 };
 
 export type FAQ = {
@@ -45,7 +54,7 @@ export type FAQ = {
   question: string;
   answer: string;
   sortOrder: number;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type Studio = {
@@ -53,13 +62,30 @@ export type Studio = {
   slug: string;
   name: string;
   region: Region | string;
+  city: string;
   styles: string[];
   images: StudioImage[];
   description: string;
+  longDescription: string;
+  coverImage: string;
+  services: string[];
+  destinations: string[];
+  includedServices: string[];
+  budget: string;
+  budgetMin: number;
+  budgetMax: number;
+  currency: string;
   priceFrom: number;
+  priceFromJpy: number;
+  durationHours: number;
+  summary: string;
+  heroImage: string;
   rating: number;
+  reviewCount?: number;
   featured?: boolean;
-  [key: string]: any;
+  reviews?: Review[];
+  faqs?: FAQ[];
+  [key: string]: unknown;
 };
 
 export type Reservation = {
@@ -73,7 +99,7 @@ export type Reservation = {
   message: string;
   status: "new" | "contacted" | "confirmed" | "completed" | "cancelled";
   createdAt: string;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type RecommendationAnswers = {
@@ -83,6 +109,7 @@ export type RecommendationAnswers = {
   season: string;
   priorities: string[];
   mood: string;
+  language?: "KR" | "JP" | "EN";
 };
 
 export type Recommendation = {

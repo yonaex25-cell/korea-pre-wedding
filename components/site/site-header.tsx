@@ -5,25 +5,54 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Check, ChevronDown, Globe2, Menu, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { languages, useLanguage, type LanguageCode } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
-import { languages, type LanguageCode, useLanguage } from "@/components/providers/language-provider";
+import { isAdminEmail } from "@/lib/admin";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", key: "home" },
-  { href: "/studios", key: "studios" },
-  { href: "/ai-recommendation", key: "aiMatch" },
-  { href: "/reviews", key: "reviews" },
-  { href: "/faq", key: "faq" },
-  { href: "/contact", key: "contact" }
+  { href: "/", labelKey: "home" },
+  { href: "/studios", labelKey: "studios" },
+  { href: "/ai-recommendation", labelKey: "aiMatch" },
+  { href: "/reviews", labelKey: "reviews" },
+  { href: "/faq", labelKey: "faq" },
+  { href: "/contact", labelKey: "contact" }
 ] as const;
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { language, setLanguage, t } = useLanguage();
   const languageMenuRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const { language, setLanguage, text } = useLanguage();
+  const [showAdminButton, setShowAdminButton] = useState(false);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      setShowAdminButton(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (isMounted) {
+        setShowAdminButton(isAdminEmail(data.user?.email));
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setShowAdminButton(isAdminEmail(session?.user.email));
+    });
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -36,13 +65,16 @@ export function SiteHeader() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname?.startsWith("/admin")) {
     return null;
   }
 
   function isActive(href: string) {
-    if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(href + "/");
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname?.startsWith(href + "/");
   }
 
   function selectLanguage(nextLanguage: LanguageCode) {
@@ -68,12 +100,18 @@ export function SiteHeader() {
                 isActive(item.href) && "text-foreground"
               )}
             >
-              {text.nav[item.key]}
+              {t.nav[item.labelKey]}
             </Link>
           ))}
         </nav>
 
         <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          {showAdminButton ? (
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/admin/dashboard">{t.nav.admin}</Link>
+            </Button>
+          ) : null}
+
           <div ref={languageMenuRef} className="relative">
             <button
               type="button"
@@ -106,7 +144,9 @@ export function SiteHeader() {
           </div>
 
           <Button asChild size="sm">
-            <Link href="/reservation"><Sparkles aria-hidden /> {text.nav.consultation}</Link>
+            <Link href="/reservation">
+              <Sparkles aria-hidden /> {t.nav.consultation}
+            </Link>
           </Button>
         </div>
 
@@ -128,13 +168,19 @@ export function SiteHeader() {
                   isActive(item.href) && "bg-secondary text-foreground"
                 )}
               >
-                {text.nav[item.key]}
+                {t.nav[item.labelKey]}
               </Link>
             ))}
 
+            {showAdminButton ? (
+              <Link href="/admin/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">
+                {t.nav.admin}
+              </Link>
+            ) : null}
+
             <div className="grid gap-2 rounded-lg border border-border bg-background p-3">
               <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                <Globe2 className="size-4" aria-hidden /> {text.nav.language}
+                <Globe2 className="size-4" aria-hidden /> {t.nav.language}
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {languages.map((item) => (
@@ -147,7 +193,7 @@ export function SiteHeader() {
                       language === item.code && "border-primary bg-secondary text-foreground"
                     )}
                   >
-                    {item.code}
+                    {item.shortLabel}
                   </button>
                 ))}
               </div>
@@ -161,7 +207,7 @@ export function SiteHeader() {
             </div>
 
             <Link href="/reservation" onClick={() => setOpen(false)} className="rounded-lg bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground">
-              {text.nav.consultation}
+              {t.nav.consultation}
             </Link>
           </nav>
         </div>

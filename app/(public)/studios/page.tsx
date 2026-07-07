@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { StudioFilters } from "@/components/studios/studio-filters";
 import { StudioCard } from "@/components/studios/studio-card";
+import { LocalizedText } from "@/components/site/localized-text";
 import { SectionHeading } from "@/components/site/section-heading";
 import { getStudios } from "@/lib/studio-service";
 import type { StudioFilters as StudioFilterType } from "@/lib/types";
@@ -32,9 +33,9 @@ export default async function StudioListPage({ searchParams }: PageProps) {
     <main className="bg-background">
       <section className="container-shell space-y-8 py-14 md:py-20">
         <SectionHeading
-          eyebrow="Studio List"
-          title="Find Korean photography studios"
-          description="Filter by region, style, budget, and keyword to compare studios that fit your wedding photography plan."
+          eyebrow={<LocalizedText path="pages.studiosEyebrow" fallback="Studio List" />}
+          title={<LocalizedText path="pages.studiosTitle" fallback="Find Korean photography studios" />}
+          description={<LocalizedText path="pages.studiosDescription" fallback="Filter by region, style, budget, and keyword to compare studios that fit your wedding photography plan." />}
         />
         <StudioFilters filters={filters} />
         {studios.length ? (
@@ -43,8 +44,8 @@ export default async function StudioListPage({ searchParams }: PageProps) {
           </div>
         ) : (
           <div className="rounded-lg border border-border bg-white p-10 text-center shadow-soft">
-            <h2 className="text-2xl font-semibold text-ink">No studios match these filters</h2>
-            <p className="mt-3 text-muted-foreground">Try widening the region, style, or budget.</p>
+            <h2 className="text-2xl font-semibold text-ink"><LocalizedText path="pages.noStudiosTitle" fallback="No studios match these filters" /></h2>
+            <p className="mt-3 text-muted-foreground"><LocalizedText path="pages.noStudiosDescription" fallback="Try widening the region, style, or budget." /></p>
           </div>
         )}
       </section>

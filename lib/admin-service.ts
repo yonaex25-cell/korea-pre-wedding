@@ -19,9 +19,12 @@ function mapStudio(row: any): Studio {
   const images = (row.studio_images || []).map((image: any) => ({
     id: image.id,
     url: image.url,
-    alt: image.alt_text,
+    alt: image.alt_text || row.name,
     sortOrder: image.sort_order || 0
   }));
+  const coverImage = row.cover_image_url || images[0]?.url || "";
+  const includedServices = row.included_services || [];
+  const priceFrom = row.price_from ?? row.priceFrom ?? 0;
 
   return {
     id: row.id,
@@ -30,15 +33,21 @@ function mapStudio(row: any): Studio {
     region: row.region,
     city: row.city,
     styles: row.styles || [],
+    budget: row.budget || "Premium",
     budgetMin: row.budget_min,
     budgetMax: row.budget_max,
-    priceFrom: row.price_from,
+    priceFrom,
+    priceFromJpy: row.price_from_jpy ?? row.priceFromJpy ?? priceFrom,
+    durationHours: row.duration_hours ?? row.durationHours ?? 0,
     currency: row.currency || "JPY",
     description: row.description,
+    summary: row.summary || row.description || "",
     longDescription: row.long_description,
-    coverImage: row.cover_image_url,
-    images: images.length ? images : [{ id: row.id + "-cover", url: row.cover_image_url, alt: row.name, sortOrder: 0 }],
-    services: row.included_services || [],
+    coverImage,
+    heroImage: row.hero_image || row.heroImage || coverImage,
+    images: images.length ? images : [{ id: row.id + "-cover", url: coverImage, alt: row.name, sortOrder: 0 }],
+    services: includedServices,
+    includedServices,
     destinations: row.destinations || [],
     featured: Boolean(row.featured),
     rating: 4.8,
@@ -47,7 +56,6 @@ function mapStudio(row: any): Studio {
     faqs: []
   };
 }
-
 function mapReservation(row: any): Reservation {
   return {
     id: String(row.id),

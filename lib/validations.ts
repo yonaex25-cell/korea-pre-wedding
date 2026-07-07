@@ -16,7 +16,8 @@ export const recommendationSchema = z.object({
   budget: z.string().trim().min(1),
   season: z.string().trim().min(1),
   mood: z.string().trim().min(1),
-  priorities: z.array(z.string()).min(1)
+  priorities: z.array(z.string()).min(1),
+  language: z.enum(["KR", "JP", "EN"]).default("EN")
 });
 
 export const studioAdminSchema = z.object({

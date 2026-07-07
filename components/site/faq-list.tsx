@@ -26,9 +26,7 @@ export function FaqList({ faqs }: FaqListProps) {
               </span>
               <span className="text-gold-700 transition group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-4 pl-8 text-sm leading-7 text-muted-foreground">
-              {localizedFaq.answer}
-            </p>
+            <p className="mt-4 pl-8 text-sm leading-7 text-muted-foreground">{localizedFaq.answer}</p>
           </details>
         );
       })}

@@ -2,14 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import { Send } from "lucide-react";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useLanguage } from "@/components/providers/language-provider";
 
 export function ContactForm() {
-  const { text } = useLanguage();
+  const { t } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -30,41 +30,43 @@ export function ContactForm() {
       })
     });
 
-    const result = await response.json();
+    await response.json();
 
     if (!response.ok) {
       setStatus("error");
-      setMessage(result.message || "Could not send your message.");
+      setMessage(t.forms.contact.error);
       return;
     }
 
     event.currentTarget.reset();
     setStatus("success");
-    setMessage(text.forms.contactSuccess);
+    setMessage(t.forms.contact.success);
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name">{text.forms.name}</Label>
+          <Label htmlFor="name">{t.forms.common.name}</Label>
           <Input id="name" name="name" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">{text.forms.email}</Label>
+          <Label htmlFor="email">{t.forms.common.email}</Label>
           <Input id="email" name="email" type="email" required />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="lineId">{text.forms.lineId}</Label>
+        <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
         <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">{text.forms.message}</Label>
-        <Textarea id="message" name="message" placeholder={text.forms.contactPlaceholder} required />
+        <Label htmlFor="message">{t.forms.common.message}</Label>
+        <Textarea id="message" name="message" placeholder={t.forms.contact.placeholder} required />
       </div>
       {message ? <p className={status === "error" ? "text-sm text-destructive" : "text-sm text-sage"}>{message}</p> : null}
-      <Button type="submit" disabled={status === "loading"}><Send aria-hidden /> {status === "loading" ? text.forms.sending : text.forms.sendMessage}</Button>
+      <Button type="submit" disabled={status === "loading"}>
+        <Send aria-hidden /> {status === "loading" ? t.forms.common.sending : t.forms.common.sendMessage}
+      </Button>
     </form>
   );
 }

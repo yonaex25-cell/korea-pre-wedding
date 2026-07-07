@@ -66,21 +66,37 @@ export function toValidDate(value?: string | number | Date | null): Date | null 
   return date;
 }
 
-export function formatDate(value?: string | number | Date | null, _locale = "en-US"): string {
+export function formatDate(value?: string | number | Date | null, locale = "en-US"): string {
   const date = toValidDate(value);
 
   if (!date) {
     return "";
   }
 
+  if (locale === "ja-JP" || locale === "ko-KR") {
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }).format(date);
+  }
+
   return longMonthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
 }
 
-export function formatShortDate(value?: string | number | Date | null, _locale = "en-US"): string {
+export function formatShortDate(value?: string | number | Date | null, locale = "en-US"): string {
   const date = toValidDate(value);
 
   if (!date) {
     return "";
+  }
+
+  if (locale === "ja-JP" || locale === "ko-KR") {
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    }).format(date);
   }
 
   return shortMonthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();

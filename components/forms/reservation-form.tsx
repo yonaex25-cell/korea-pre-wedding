@@ -2,12 +2,12 @@
 
 import { CalendarDays, Send } from "lucide-react";
 import { FormEvent, useState } from "react";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useLanguage } from "@/components/providers/language-provider";
 import type { Studio } from "@/lib/types";
 
 type ReservationFormProps = {
@@ -16,7 +16,7 @@ type ReservationFormProps = {
 };
 
 export function ReservationForm({ studios, selectedStudioSlug }: ReservationFormProps) {
-  const { text } = useLanguage();
+  const { t } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -45,27 +45,27 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
 
     if (!response.ok) {
       setStatus("error");
-      setMessage(result.message || "Could not send your consultation request.");
+      setMessage(t.forms.reservation.error);
       return;
     }
 
     event.currentTarget.reset();
     setStatus("success");
-    setMessage(result.demo ? "Demo mode accepted the request. Supabase will save it after setup." : text.forms.reservationSuccess);
+    setMessage(result.demo ? t.forms.reservation.demoSuccess : t.forms.reservation.success);
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="studioSlug">{text.forms.studio}</Label>
+          <Label htmlFor="studioSlug">{t.forms.reservation.studio}</Label>
           <Select id="studioSlug" name="studioSlug" defaultValue={selectedStudioSlug || ""}>
-            <option value="">{text.forms.helpMeChoose}</option>
+            <option value="">{t.forms.reservation.helpMeChoose}</option>
             {studios.map((studio) => <option key={studio.slug} value={studio.slug}>{studio.name}</option>)}
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="preferredDate">{text.forms.preferredDate}</Label>
+          <Label htmlFor="preferredDate">{t.forms.reservation.preferredDate}</Label>
           <div className="relative">
             <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
             <Input id="preferredDate" name="preferredDate" type="date" className="pl-9" required />
@@ -74,25 +74,25 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
       </div>
       <div className="grid gap-5 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="name">{text.forms.name}</Label>
+          <Label htmlFor="name">{t.forms.common.name}</Label>
           <Input id="name" name="name" autoComplete="name" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">{text.forms.email}</Label>
+          <Label htmlFor="email">{t.forms.common.email}</Label>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lineId">{text.forms.lineId}</Label>
+          <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
           <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">{text.forms.message}</Label>
-        <Textarea id="message" name="message" placeholder={text.forms.reservationPlaceholder} required />
+        <Label htmlFor="message">{t.forms.common.message}</Label>
+        <Textarea id="message" name="message" placeholder={t.forms.reservation.placeholder} required />
       </div>
       {message ? <p className={status === "error" ? "text-sm text-destructive" : "text-sm text-sage"}>{message}</p> : null}
       <Button type="submit" disabled={status === "loading"}>
-        <Send aria-hidden /> {status === "loading" ? text.forms.sending : text.forms.requestConsultation}
+        <Send aria-hidden /> {status === "loading" ? t.forms.common.sending : t.forms.reservation.submit}
       </Button>
     </form>
   );

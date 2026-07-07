@@ -20,6 +20,18 @@ function summarizeStudio(studio: Studio) {
   };
 }
 
+function languageInstruction(language: "KR" | "JP" | "EN") {
+  if (language === "KR") {
+    return "Write every recommendation note in Korean.";
+  }
+
+  if (language === "JP") {
+    return "Write every recommendation note in Japanese.";
+  }
+
+  return "Write every recommendation note in English.";
+}
+
 function mergeOpenAIResult(studios: Studio[], fallback: Recommendation[], content: string) {
   const parsed = JSON.parse(content) as { slugs?: string[]; notes?: Record<string, string[]> };
   const bySlug = new Map(studios.map((studio: Studio) => [studio.slug, studio]));
@@ -52,6 +64,7 @@ export async function POST(request: Request) {
   const studios = await getStudios();
   const matchingStudios = filterStudiosForAnswers(studios, parsed.data);
   const fallback = rankStudios(matchingStudios, parsed.data);
+  const requestedLanguage = parsed.data.language;
 
   if (!matchingStudios.length) {
     return NextResponse.json({ source: "local", recommendations: [] });
@@ -69,7 +82,7 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "system",
-          content: 'You are Dasoni, a Korea wedding photography concierge. Recommend only from the provided studios. Return only JSON: {"slugs":["studio-slug"],"notes":{"studio-slug":["short reason"]}}.'
+          content: 'You are Dasoni, a Korea wedding photography concierge. Recommend only from the provided studios. ' + languageInstruction(requestedLanguage) + ' Return only JSON: {"slugs":["studio-slug"],"notes":{"studio-slug":["short reason"]}}.'
         },
         {
           role: "user",
