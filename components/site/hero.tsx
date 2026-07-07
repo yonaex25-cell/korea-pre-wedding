@@ -48,7 +48,7 @@ export function Hero() {
         <div className="hidden justify-self-end rounded-lg border border-white/24 bg-white/14 p-5 shadow-soft backdrop-blur-xl lg:block lg:w-full lg:max-w-md">
           <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-white/10">
             <Image
-              src="/images/hero-card-bright.jpg"
+              src="/images/hero-card-bright.JPG"
               alt={t.hero.cardAlt}
               fill
               sizes="(min-width: 1024px) 420px, 100vw"
