@@ -1,9 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLanguage } from "@/components/providers/language-provider";
 import { formatJPY } from "@/lib/format";
 import type { Studio } from "@/lib/types";
 
@@ -12,13 +15,15 @@ type StudioCardProps = {
 };
 
 export function StudioCard({ studio }: StudioCardProps) {
+  const { text } = useLanguage();
+
   return (
     <Card className="group overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-gold">
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image src={studio.coverImage} alt={studio.name} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
         <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-          {studio.featured ? <Badge>Featured</Badge> : null}
-          <Badge className="bg-white/88 backdrop-blur">{studio.region}</Badge>
+          {studio.featured ? <Badge>{text.studioCard.featured}</Badge> : null}
+          <Badge variant="outline" className="bg-white/88 backdrop-blur">{studio.region}</Badge>
         </div>
       </div>
       <CardContent className="space-y-4 p-5">
@@ -31,15 +36,15 @@ export function StudioCard({ studio }: StudioCardProps) {
           <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">{studio.description}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {studio.styles.map((style) => <Badge key={style}>{style}</Badge>)}
+          {studio.styles.map((style) => <Badge key={style} variant="secondary">{style}</Badge>)}
         </div>
         <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
           <div>
-            <p className="text-xs text-muted-foreground">From</p>
+            <p className="text-xs text-muted-foreground">{text.studioCard.from}</p>
             <p className="font-semibold text-ink">{formatJPY(studio.priceFrom)}</p>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link href={"/studios/" + studio.slug}>Details <ArrowRight aria-hidden /></Link>
+            <Link href={"/studios/" + studio.slug}>{text.studioCard.details} <ArrowRight aria-hidden /></Link>
           </Button>
         </div>
       </CardContent>

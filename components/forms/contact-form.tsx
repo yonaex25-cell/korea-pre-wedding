@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useLanguage } from "@/components/providers/language-provider";
 
 export function ContactForm() {
+  const { text } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -38,31 +40,31 @@ export function ContactForm() {
 
     event.currentTarget.reset();
     setStatus("success");
-    setMessage("Thank you. Dasoni received your message.");
+    setMessage(text.forms.contactSuccess);
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">{text.forms.name}</Label>
           <Input id="name" name="name" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{text.forms.email}</Label>
           <Input id="email" name="email" type="email" required />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="lineId">LINE ID</Label>
+        <Label htmlFor="lineId">{text.forms.lineId}</Label>
         <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
-        <Textarea id="message" name="message" placeholder="Destination, schedule, budget, preferred mood, and any questions." required />
+        <Label htmlFor="message">{text.forms.message}</Label>
+        <Textarea id="message" name="message" placeholder={text.forms.contactPlaceholder} required />
       </div>
       {message ? <p className={status === "error" ? "text-sm text-destructive" : "text-sm text-sage"}>{message}</p> : null}
-      <Button type="submit" disabled={status === "loading"}><Send aria-hidden /> {status === "loading" ? "Sending" : "Send message"}</Button>
+      <Button type="submit" disabled={status === "loading"}><Send aria-hidden /> {status === "loading" ? text.forms.sending : text.forms.sendMessage}</Button>
     </form>
   );
 }

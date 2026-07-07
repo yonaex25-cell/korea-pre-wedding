@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useLanguage } from "@/components/providers/language-provider";
 import type { Studio } from "@/lib/types";
 
 type ReservationFormProps = {
@@ -15,6 +16,7 @@ type ReservationFormProps = {
 };
 
 export function ReservationForm({ studios, selectedStudioSlug }: ReservationFormProps) {
+  const { text } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -49,21 +51,21 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
 
     event.currentTarget.reset();
     setStatus("success");
-    setMessage(result.demo ? "Demo mode accepted the request. Supabase will save it after setup." : "Your consultation request was received.");
+    setMessage(result.demo ? "Demo mode accepted the request. Supabase will save it after setup." : text.forms.reservationSuccess);
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="studioSlug">Studio</Label>
+          <Label htmlFor="studioSlug">{text.forms.studio}</Label>
           <Select id="studioSlug" name="studioSlug" defaultValue={selectedStudioSlug || ""}>
-            <option value="">Help me choose</option>
+            <option value="">{text.forms.helpMeChoose}</option>
             {studios.map((studio) => <option key={studio.slug} value={studio.slug}>{studio.name}</option>)}
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="preferredDate">Preferred date</Label>
+          <Label htmlFor="preferredDate">{text.forms.preferredDate}</Label>
           <div className="relative">
             <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
             <Input id="preferredDate" name="preferredDate" type="date" className="pl-9" required />
@@ -72,25 +74,25 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
       </div>
       <div className="grid gap-5 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">{text.forms.name}</Label>
           <Input id="name" name="name" autoComplete="name" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{text.forms.email}</Label>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lineId">LINE ID</Label>
+          <Label htmlFor="lineId">{text.forms.lineId}</Label>
           <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
-        <Textarea id="message" name="message" placeholder="Destination, preferred style, outfits, guests, budget, or travel details." required />
+        <Label htmlFor="message">{text.forms.message}</Label>
+        <Textarea id="message" name="message" placeholder={text.forms.reservationPlaceholder} required />
       </div>
       {message ? <p className={status === "error" ? "text-sm text-destructive" : "text-sm text-sage"}>{message}</p> : null}
       <Button type="submit" disabled={status === "loading"}>
-        <Send aria-hidden /> {status === "loading" ? "Sending" : "Request consultation"}
+        <Send aria-hidden /> {status === "loading" ? text.forms.sending : text.forms.requestConsultation}
       </Button>
     </form>
   );

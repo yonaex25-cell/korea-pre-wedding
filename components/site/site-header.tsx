@@ -1,10 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Globe2, Menu, Sparkles, X } from "lucide-react";
+import { Check, ChevronDown, Globe2, Menu, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { languages, type LanguageCode, useLanguage } from "@/components/providers/language-provider";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", key: "home" },
@@ -18,7 +21,7 @@ const navItems = [
 export function SiteHeader() {
   const pathname = usePathname();
   const languageMenuRef = useRef<HTMLDivElement>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const { language, setLanguage, text } = useLanguage();
 
@@ -38,10 +41,7 @@ export function SiteHeader() {
   }
 
   function isActive(href: string) {
-    if (href === "/") {
-      return pathname === "/";
-    }
-
+    if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(href + "/");
   }
 
@@ -51,26 +51,22 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/95 shadow-sm backdrop-blur-xl">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-6 sm:px-8 lg:px-10">
-        <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setMobileOpen(false)}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ff385c] text-sm font-bold text-white">
-            D
-          </span>
-          <span className="truncate text-sm font-semibold tracking-[0.16em] text-neutral-950">
-            DASONI
-          </span>
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-white/95 shadow-[0_10px_30px_rgba(17,17,17,0.05)] backdrop-blur-xl">
+      <div className="container-shell flex h-16 items-center justify-between gap-4">
+        <Link href="/" className="flex min-w-0 items-center gap-3" aria-label="Dasoni home" onClick={() => setOpen(false)}>
+          <Image src="/logo.svg" alt="Dasoni" width={36} height={36} className="rounded-lg" priority />
+          <span className="truncate text-sm font-semibold tracking-[0.16em] text-ink">DASONI</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
+        <nav className="hidden min-w-0 items-center gap-7 lg:flex" aria-label="Main navigation">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={
-                "whitespace-nowrap text-sm font-medium transition hover:text-neutral-950 " +
-                (isActive(item.href) ? "text-neutral-950" : "text-neutral-500")
-              }
+              className={cn(
+                "whitespace-nowrap text-sm font-medium text-muted-foreground transition hover:text-foreground",
+                isActive(item.href) && "text-foreground"
+              )}
             >
               {text.nav[item.key]}
             </Link>
@@ -82,116 +78,89 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setLanguageOpen((value) => !value)}
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-950 shadow-sm transition hover:bg-neutral-50"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-white px-3 text-sm font-semibold text-ink shadow-sm transition hover:bg-secondary"
               aria-haspopup="menu"
               aria-expanded={languageOpen}
             >
-              <Globe2 className="h-4 w-4" aria-hidden />
+              <Globe2 className="size-4" aria-hidden />
               {language}
-              <ChevronDown className={"h-4 w-4 transition " + (languageOpen ? "rotate-180" : "")} aria-hidden />
+              <ChevronDown className={cn("size-4 transition", languageOpen && "rotate-180")} aria-hidden />
             </button>
 
             {languageOpen ? (
-              <div className="absolute right-0 top-12 z-50 w-40 overflow-hidden rounded-xl border border-neutral-200 bg-white p-1 shadow-lg" role="menu">
+              <div className="absolute right-0 top-12 z-50 w-40 overflow-hidden rounded-lg border border-border bg-white p-1 shadow-soft" role="menu">
                 {languages.map((item) => (
                   <button
                     key={item.code}
                     type="button"
                     onClick={() => selectLanguage(item.code)}
-                    className={
-                      "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition hover:bg-rose-50 " +
-                      (language === item.code ? "font-semibold text-[#ff385c]" : "text-neutral-800")
-                    }
+                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-ink transition hover:bg-secondary"
                     role="menuitem"
                   >
                     <span>{item.label}</span>
-                    <span className="text-xs">{item.code}</span>
+                    {language === item.code ? <Check className="size-4 text-primary" aria-hidden /> : null}
                   </button>
                 ))}
               </div>
             ) : null}
           </div>
 
-          <Link
-            href="/reservation"
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#ff385c] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e03150]"
-          >
-            <Sparkles className="h-4 w-4" aria-hidden />
-            {text.nav.consultation}
-          </Link>
+          <Button asChild size="sm">
+            <Link href="/reservation"><Sparkles aria-hidden /> {text.nav.consultation}</Link>
+          </Button>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-neutral-950 transition hover:bg-neutral-100 lg:hidden"
-          onClick={() => setMobileOpen((value) => !value)}
-          aria-label="Open menu"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
-        </button>
+        <Button variant="ghost" size="icon" className="shrink-0 lg:hidden" onClick={() => setOpen((value) => !value)} aria-label="Open menu">
+          {open ? <X aria-hidden /> : <Menu aria-hidden />}
+        </Button>
       </div>
 
-      {mobileOpen ? (
-        <div className="border-t border-neutral-200 bg-white shadow-lg lg:hidden">
-          <nav className="mx-auto grid w-full max-w-7xl gap-2 px-6 py-4 sm:px-8" aria-label="Mobile navigation">
+      {open ? (
+        <div className="border-t border-border bg-white shadow-soft lg:hidden">
+          <nav className="container-shell grid gap-2 py-4" aria-label="Mobile navigation">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={
-                  "rounded-lg px-3 py-3 text-sm font-medium transition hover:bg-rose-50 hover:text-neutral-950 " +
-                  (isActive(item.href) ? "bg-rose-50 text-neutral-950" : "text-neutral-600")
-                }
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  isActive(item.href) && "bg-secondary text-foreground"
+                )}
               >
                 {text.nav[item.key]}
               </Link>
             ))}
 
-            <div className="grid gap-2 rounded-xl border border-neutral-200 bg-neutral-50 p-3">
-              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500">
-                <Globe2 className="h-4 w-4" aria-hidden />
-                {text.nav.language}
+            <div className="grid gap-2 rounded-lg border border-border bg-background p-3">
+              <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                <Globe2 className="size-4" aria-hidden /> {text.nav.language}
               </p>
-
               <div className="grid grid-cols-3 gap-2">
                 {languages.map((item) => (
                   <button
                     key={item.code}
                     type="button"
                     onClick={() => selectLanguage(item.code)}
-                    className={
-                      "rounded-lg border px-3 py-2 text-sm font-semibold transition hover:bg-white " +
-                      (language === item.code
-                        ? "border-[#ff385c] bg-white text-[#ff385c]"
-                        : "border-neutral-200 bg-white text-neutral-600")
-                    }
+                    className={cn(
+                      "rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground",
+                      language === item.code && "border-primary bg-secondary text-foreground"
+                    )}
                   >
                     {item.code}
                   </button>
                 ))}
               </div>
-
-              <div className="grid gap-1 text-xs text-neutral-500">
+              <div className="grid gap-1 text-xs text-muted-foreground">
                 {languages.map((item) => (
-                  <button
-                    key={item.code}
-                    type="button"
-                    onClick={() => selectLanguage(item.code)}
-                    className="text-left hover:text-neutral-950"
-                  >
+                  <button key={item.code} type="button" onClick={() => selectLanguage(item.code)} className="text-left hover:text-foreground">
                     {item.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            <Link
-              href="/reservation"
-              onClick={() => setMobileOpen(false)}
-              className="rounded-lg bg-[#ff385c] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#e03150]"
-            >
+            <Link href="/reservation" onClick={() => setOpen(false)} className="rounded-lg bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground">
               {text.nav.consultation}
             </Link>
           </nav>
