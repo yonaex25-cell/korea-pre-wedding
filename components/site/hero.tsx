@@ -65,11 +65,6 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 border-t border-white/20 bg-white/10 py-4 backdrop-blur-md">
-        <div className="container-shell grid gap-3 text-sm text-white/86 sm:grid-cols-3">
-          {trustItems.map((item) => <span key={item}>{item}</span>)}
-        </div>
-      </div>
     </section>
   );
 }

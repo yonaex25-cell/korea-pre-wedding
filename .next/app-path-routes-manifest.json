@@ -1,13 +1,13 @@
 {
   "/_not-found/page": "/_not-found",
   "/api/admin/faqs/[id]/route": "/api/admin/faqs/[id]",
-  "/api/admin/reviews/[id]/route": "/api/admin/reviews/[id]",
   "/api/admin/faqs/route": "/api/admin/faqs",
-  "/api/admin/reservations/route": "/api/admin/reservations",
-  "/api/admin/reviews/route": "/api/admin/reviews",
+  "/api/admin/reviews/[id]/route": "/api/admin/reviews/[id]",
   "/api/admin/studios/route": "/api/admin/studios",
   "/api/admin/studios/[id]/route": "/api/admin/studios/[id]",
+  "/api/admin/reservations/route": "/api/admin/reservations",
   "/api/admin/upload/route": "/api/admin/upload",
+  "/api/admin/reviews/route": "/api/admin/reviews",
   "/api/contact/route": "/api/contact",
   "/api/recommendations/route": "/api/recommendations",
   "/api/reservations/route": "/api/reservations",
@@ -17,8 +17,8 @@
   "/(public)/studios/[slug]/page": "/studios/[slug]",
   "/(public)/ai-recommendation/page": "/ai-recommendation",
   "/(public)/contact/page": "/contact",
-  "/(public)/faq/page": "/faq",
-  "/(public)/reviews/page": "/reviews",
   "/(public)/reservation/page": "/reservation",
-  "/(public)/studios/page": "/studios"
+  "/(public)/studios/page": "/studios",
+  "/(public)/reviews/page": "/reviews",
+  "/(public)/faq/page": "/faq"
 }
