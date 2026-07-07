@@ -23,7 +23,7 @@ export function StudioCard({ studio }: StudioCardProps) {
         <Image src={studio.coverImage} alt={studio.name} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
         <div className="absolute left-4 top-4 flex flex-wrap gap-2">
           {studio.featured ? <Badge>{text.studioCard.featured}</Badge> : null}
-          <Badge variant="outline" className="bg-white/88 backdrop-blur">{studio.region}</Badge>
+          <Badge className="bg-white/88 backdrop-blur">{studio.region}</Badge>
         </div>
       </div>
       <CardContent className="space-y-4 p-5">
@@ -36,7 +36,7 @@ export function StudioCard({ studio }: StudioCardProps) {
           <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">{studio.description}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {studio.styles.map((style) => <Badge key={style} variant="secondary">{style}</Badge>)}
+          {studio.styles.map((style) => <Badge key={style}>{style}</Badge>)}
         </div>
         <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
           <div>
