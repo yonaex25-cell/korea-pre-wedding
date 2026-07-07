@@ -13,11 +13,11 @@ export function Hero() {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-white">
       <Image
-        src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=1800&q=90"
+        src="/images/hero-couple.jpg"
         alt="Elegant Korean wedding photography couple portrait"
         fill
         sizes="100vw"
-        className="-z-20 object-cover"
+        className="-z-20 object-cover object-center"
         priority
       />
       <div className="hero-scrim absolute inset-0 -z-10" />
