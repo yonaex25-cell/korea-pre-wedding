@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const CONTACT_API_URL: string = "GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+const CONTACT_API_URL: string = "https://script.google.com/macros/s/AKfycbx0A7WVbEXV8h68m4eQglodRav993mzIPJHb9bdbkuFPvFkgOI_WPNvC4334kpa0v9x/exec";
 
 const contactSuccessMessage = "\ubb38\uc758\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 24\uc2dc\uac04 \uc774\ub0b4\uc5d0 \ub2f5\ubcc0\ub4dc\ub9ac\uaca0\uc2b5\ub2c8\ub2e4.";
 const contactErrorMessage = "\ubb38\uc758 \uc804\uc1a1\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694.";
