@@ -10,6 +10,13 @@ const contactSchema = z.object({
 
 const resendTestFromEmail = "Dasoni <onboarding@resend.dev>";
 
+type ResendResponseLog = {
+  rawText: string;
+  json: unknown;
+  message: unknown;
+  error: unknown;
+};
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
@@ -41,6 +48,38 @@ function getContactFromEmail(): string {
   return resendTestFromEmail;
 }
 
+function getRecordValue(value: unknown, key: string): unknown {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return undefined;
+  }
+
+  return (value as Record<string, unknown>)[key];
+}
+
+async function readResendResponse(response: Response): Promise<ResendResponseLog> {
+  const rawText = await response.text().catch((error: unknown) => {
+    console.error("[contact] Failed to read Resend response body", error);
+    return "";
+  });
+
+  let json: unknown = null;
+
+  if (rawText) {
+    try {
+      json = JSON.parse(rawText);
+    } catch {
+      json = null;
+    }
+  }
+
+  return {
+    rawText,
+    json,
+    message: getRecordValue(json, "message"),
+    error: getRecordValue(json, "error")
+  };
+}
+
 export async function POST(request: Request) {
   const json = await request.json().catch((error: unknown) => {
     console.error("[contact] Failed to parse request JSON", error);
@@ -62,6 +101,15 @@ export async function POST(request: Request) {
     console.error("[contact] Missing RESEND_API_KEY. Add RESEND_API_KEY to Vercel Environment Variables.");
     return NextResponse.json({ message: "Contact email service is not configured." }, { status: 500 });
   }
+
+  console.info("[contact] Sending contact email through Resend", {
+    toEmail,
+    fromEmail,
+    replyTo: email,
+    hasLineId: Boolean(lineId),
+    usesResendTestSender: fromEmail.includes("onboarding@resend.dev"),
+    hasResendApiKey: Boolean(resendApiKey)
+  });
 
   const receivedText = "Dasoni \ubb38\uc758\uac00 \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4.";
   const nameLabel = "\uc774\ub984";
@@ -90,8 +138,10 @@ export async function POST(request: Request) {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
+        Accept: "application/json",
         Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": "Dasoni Contact Form/1.0"
       },
       body: JSON.stringify({
         from: fromEmail,
@@ -116,18 +166,31 @@ export async function POST(request: Request) {
         `
       })
     });
+    const resendResponse = await readResendResponse(response);
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "");
       console.error("[contact] Resend email send failed", {
         status: response.status,
         statusText: response.statusText,
         toEmail,
         fromEmail,
-        errorText
+        replyTo: email,
+        resendMessage: resendResponse.message,
+        resendError: resendResponse.error,
+        resendRawText: resendResponse.rawText,
+        resendJson: resendResponse.json
       });
       return NextResponse.json({ message: "Failed to send contact email." }, { status: 502 });
     }
+
+    console.info("[contact] Resend email sent successfully", {
+      status: response.status,
+      statusText: response.statusText,
+      toEmail,
+      fromEmail,
+      resendJson: resendResponse.json,
+      resendRawText: resendResponse.rawText
+    });
   } catch (error) {
     console.error("[contact] Resend request threw an error", error);
     return NextResponse.json({ message: "Failed to send contact email." }, { status: 502 });

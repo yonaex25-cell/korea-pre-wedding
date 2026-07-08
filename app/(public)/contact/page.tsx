@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="bg-background">
-      <section className="container-shell grid gap-12 py-14 md:py-20 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="space-y-16 text-center lg:pt-8">
+      <section className="container-shell grid items-stretch gap-12 py-14 md:py-20 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="space-y-16 text-center lg:flex lg:h-full lg:flex-col lg:justify-between lg:space-y-0">
           <section className="space-y-6">
             <h2 className="text-2xl font-semibold tracking-[0.04em] text-foreground">Customer Service</h2>
             <div className="space-y-1 text-lg font-medium leading-8 text-foreground">

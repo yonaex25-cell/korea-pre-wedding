@@ -54,17 +54,15 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
+    <form onSubmit={handleSubmit} className="grid h-full gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
       <h2 className="text-xl font-semibold text-foreground">1:1 Q&A</h2>
-      <div className="grid gap-5 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="name">{t.forms.common.name}</Label>
-          <Input id="name" name="name" required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">{t.forms.common.email}</Label>
-          <Input id="email" name="email" type="email" required />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="name">{t.forms.common.name}</Label>
+        <Input id="name" name="name" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">{t.forms.common.email}</Label>
+        <Input id="email" name="email" type="email" required />
       </div>
       <div className="space-y-2">
         <Label htmlFor="lineId">{t.forms.common.lineId} ({t.forms.common.optional})</Label>
