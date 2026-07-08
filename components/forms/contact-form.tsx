@@ -20,6 +20,11 @@ type ContactPayload = {
   message: string;
 };
 
+type ContactApiResponse = {
+  ok?: boolean;
+  message?: string;
+};
+
 function isContactApiConfigured(): boolean {
   try {
     const url = new URL(CONTACT_API_URL);
@@ -34,14 +39,26 @@ async function sendContactMessage(payload: ContactPayload): Promise<void> {
     throw new Error("Google Apps Script Web App URL is not configured.");
   }
 
-  await fetch(CONTACT_API_URL, {
+  console.log("CONTACT_API_URL", CONTACT_API_URL);
+
+  const response = await fetch(CONTACT_API_URL, {
     method: "POST",
-    mode: "no-cors",
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
     },
     body: JSON.stringify(payload)
   });
+
+  const result = (await response.json().catch(() => null)) as ContactApiResponse | null;
+
+  if (!response.ok || result?.ok !== true) {
+    console.error("[contact] Google Apps Script returned an unsuccessful response", {
+      status: response.status,
+      statusText: response.statusText,
+      result
+    });
+    throw new Error(result?.message || "Google Apps Script submission failed.");
+  }
 }
 
 export function ContactForm() {
