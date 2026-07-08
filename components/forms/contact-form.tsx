@@ -18,12 +18,15 @@ type ContactPayload = {
   email: string;
   lineId: string;
   message: string;
-  submittedAt: string;
-  source: string;
 };
 
 function isContactApiConfigured(): boolean {
-  return CONTACT_API_URL !== "GOOGLE_APPS_SCRIPT_WEB_APP_URL" && CONTACT_API_URL.startsWith("https://");
+  try {
+    const url = new URL(CONTACT_API_URL);
+    return url.protocol === "https:" && url.pathname.endsWith("/exec");
+  } catch {
+    return false;
+  }
 }
 
 async function sendContactMessage(payload: ContactPayload): Promise<void> {
@@ -59,9 +62,7 @@ export function ContactForm() {
         name: String(formData.get("name") || ""),
         email: String(formData.get("email") || ""),
         lineId: String(formData.get("lineId") || ""),
-        message: String(formData.get("message") || ""),
-        submittedAt: new Date().toISOString(),
-        source: "Dasoni contact form"
+        message: String(formData.get("message") || "")
       });
 
       form.reset();
