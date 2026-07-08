@@ -276,21 +276,21 @@ export const destinations = [
     label: "Seoul",
     description: "Studio polish, city walks, hanbok styling, and trend-forward wedding photography in one destination.",
     summary: "Studio polish, city walks, hanbok styling, and trend-forward wedding photography in one destination.",
-    image: "/images/hero-couple.jpg"
+    image: "/images/seoul-wedding.jpg"
   },
   {
     name: "Jeju",
     label: "Jeju Island",
     description: "Ocean, fields, gardens, volcanic textures, and soft natural light for destination photography.",
     summary: "Ocean, fields, gardens, volcanic textures, and soft natural light for destination photography.",
-    image: "/images/hero-card-bright.JPG"
+    image: "/images/jeju-wedding.jpg"
   },
   {
     name: "Busan",
     label: "Busan",
     description: "Haeundae, Gwangalli, bridges, skyline, and cinematic coastal city wedding photography.",
     summary: "Haeundae, Gwangalli, bridges, skyline, and cinematic coastal city wedding photography.",
-    image: "/images/hero-couple.jpg"
+    image: "/images/busan-wedding.jpg"
   }
 ];
 
