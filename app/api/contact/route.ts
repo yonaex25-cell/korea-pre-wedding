@@ -8,6 +8,8 @@ const contactSchema = z.object({
   message: z.string().trim().min(5)
 });
 
+const resendTestFromEmail = "Dasoni <onboarding@resend.dev>";
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
@@ -15,6 +17,28 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function getContactFromEmail(): string {
+  const configuredFromEmail = process.env.CONTACT_FROM_EMAIL?.trim();
+  const allowVerifiedFromEmail = process.env.CONTACT_FROM_EMAIL_VERIFIED === "true";
+
+  if (!configuredFromEmail) {
+    return resendTestFromEmail;
+  }
+
+  if (configuredFromEmail.includes("onboarding@resend.dev")) {
+    return configuredFromEmail;
+  }
+
+  if (allowVerifiedFromEmail) {
+    return configuredFromEmail;
+  }
+
+  console.warn(
+    "[contact] CONTACT_FROM_EMAIL is set but CONTACT_FROM_EMAIL_VERIFIED is not true. Falling back to onboarding@resend.dev."
+  );
+  return resendTestFromEmail;
 }
 
 export async function POST(request: Request) {
@@ -31,7 +55,7 @@ export async function POST(request: Request) {
 
   const resendApiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.CONTACT_TO_EMAIL || "yonaex25@gmail.com";
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || "Dasoni <onboarding@resend.dev>";
+  const fromEmail = getContactFromEmail();
   const { name, email, lineId, message } = parsed.data;
 
   if (!resendApiKey) {
