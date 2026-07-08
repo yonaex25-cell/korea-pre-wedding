@@ -26,8 +26,8 @@ export function Footer() {
         <div>
           <h3 className="font-semibold">Contact</h3>
           <div className="mt-3 grid gap-2 text-sm text-muted-foreground">
-            <a className="inline-flex items-center gap-2" href="mailto:contact@koreaprewedding.jp">
-              <Mail className="h-4 w-4" /> contact@koreaprewedding.jp
+            <a className="inline-flex items-center gap-2" href="mailto:yonaex25@gmail.com">
+              <Mail className="h-4 w-4" /> yonaex25@gmail.com
             </a>
             <span className="inline-flex items-center gap-2"><Instagram className="h-4 w-4" /> @koreaprewedding</span>
           </div>

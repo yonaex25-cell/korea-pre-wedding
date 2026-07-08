@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+const contactSuccessMessage = "\ubb38\uc758\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4.";
+const contactErrorMessage = "\ubb38\uc758 \uc804\uc1a1\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694.";
+
 export function ContactForm() {
   const { t } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -18,33 +21,41 @@ export function ContactForm() {
     setStatus("loading");
     setMessage("");
 
-    const formData = new FormData(event.currentTarget);
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: String(formData.get("name") || ""),
-        email: String(formData.get("email") || ""),
-        lineId: String(formData.get("lineId") || ""),
-        message: String(formData.get("message") || "")
-      })
-    });
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-    await response.json();
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: String(formData.get("name") || ""),
+          email: String(formData.get("email") || ""),
+          lineId: String(formData.get("lineId") || ""),
+          message: String(formData.get("message") || "")
+        })
+      });
 
-    if (!response.ok) {
+      await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setStatus("error");
+        setMessage(contactErrorMessage);
+        return;
+      }
+
+      form.reset();
+      setStatus("success");
+      setMessage(contactSuccessMessage);
+    } catch {
       setStatus("error");
-      setMessage(t.forms.contact.error);
-      return;
+      setMessage(contactErrorMessage);
     }
-
-    event.currentTarget.reset();
-    setStatus("success");
-    setMessage(t.forms.contact.success);
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
+      <h2 className="text-xl font-semibold text-foreground">1:1 Q&A</h2>
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">{t.forms.common.name}</Label>
@@ -56,8 +67,8 @@ export function ContactForm() {
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
-        <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
+        <Label htmlFor="lineId">{t.forms.common.lineId} ({t.forms.common.optional})</Label>
+        <Input id="lineId" name="lineId" placeholder="ngyn9813" />
       </div>
       <div className="space-y-2">
         <Label htmlFor="message">{t.forms.common.message}</Label>

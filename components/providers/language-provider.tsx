@@ -161,6 +161,7 @@ export const dictionary = {
         name: "Name",
         email: "Email",
         lineId: "LINE ID",
+        optional: "Optional",
         message: "Message",
         sending: "Sending",
         sendMessage: "Send message",
@@ -168,8 +169,8 @@ export const dictionary = {
       },
       contact: {
         placeholder: "Destination, schedule, budget, preferred mood, and any questions.",
-        error: "Could not send your message.",
-        success: "Thank you. Dasoni received your message."
+        error: "Failed to send your inquiry. Please try again later.",
+        success: "Your inquiry has been received."
       },
       reservation: {
         studio: "Studio",
@@ -377,6 +378,7 @@ export const dictionary = {
         name: "お名前",
         email: "メール",
         lineId: "LINE ID",
+        optional: "\u4efb\u610f",
         message: "メッセージ",
         sending: "送信中",
         sendMessage: "送信する",
@@ -384,8 +386,8 @@ export const dictionary = {
       },
       contact: {
         placeholder: "希望エリア、日程、予算、雰囲気、ご質問を入力してください。",
-        error: "メッセージを送信できませんでした。",
-        success: "ありがとうございます。Dasoniがメッセージを受け取りました。"
+        error: "\u304a\u554f\u3044\u5408\u308f\u305b\u306e\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002\u6642\u9593\u3092\u304a\u3044\u3066\u518d\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002",
+        success: "\u304a\u554f\u3044\u5408\u308f\u305b\u3092\u53d7\u3051\u4ed8\u3051\u307e\u3057\u305f\u3002"
       },
       reservation: {
         studio: "スタジオ",
@@ -592,6 +594,7 @@ export const dictionary = {
         name: "이름",
         email: "이메일",
         lineId: "LINE ID",
+        optional: "\uc120\ud0dd",
         message: "메시지",
         sending: "전송 중",
         sendMessage: "메시지 보내기",
@@ -599,8 +602,8 @@ export const dictionary = {
       },
       contact: {
         placeholder: "희망 지역, 일정, 예산, 원하는 무드, 궁금한 점을 입력해 주세요.",
-        error: "메시지를 보낼 수 없습니다.",
-        success: "감사합니다. Dasoni가 메시지를 받았습니다."
+        error: "\ubb38\uc758 \uc804\uc1a1\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694.",
+        success: "\ubb38\uc758\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4."
       },
       reservation: {
         studio: "스튜디오",
