@@ -83,7 +83,8 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-white/95 shadow-[0_10px_30px_rgba(17,17,17,0.05)] backdrop-blur-xl">
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 w-full border-b border-border/70 bg-white/80 shadow-[0_10px_30px_rgba(17,17,17,0.05)] backdrop-blur-xl">
       <div className="container-shell flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex min-w-0 items-center gap-3" aria-label="Dasoni home" onClick={() => setOpen(false)}>
           <Image src="/logo.svg" alt="Dasoni" width={36} height={36} className="rounded-lg" priority />
@@ -212,6 +213,8 @@ export function SiteHeader() {
           </nav>
         </div>
       ) : null}
-    </header>
+      </header>
+      <div className="h-16" aria-hidden="true" />
+    </>
   );
 }
