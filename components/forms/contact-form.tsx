@@ -8,8 +8,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const contactSuccessMessage = "\ubb38\uc758\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4.";
+const CONTACT_API_URL: string = "GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+
+const contactSuccessMessage = "\ubb38\uc758\uac00 \uc815\uc0c1\uc801\uc73c\ub85c \uc811\uc218\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 24\uc2dc\uac04 \uc774\ub0b4\uc5d0 \ub2f5\ubcc0\ub4dc\ub9ac\uaca0\uc2b5\ub2c8\ub2e4.";
 const contactErrorMessage = "\ubb38\uc758 \uc804\uc1a1\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574\uc8fc\uc138\uc694.";
+
+type ContactPayload = {
+  name: string;
+  email: string;
+  lineId: string;
+  message: string;
+  submittedAt: string;
+  source: string;
+};
+
+function isContactApiConfigured(): boolean {
+  return CONTACT_API_URL !== "GOOGLE_APPS_SCRIPT_WEB_APP_URL" && CONTACT_API_URL.startsWith("https://");
+}
+
+async function sendContactMessage(payload: ContactPayload): Promise<void> {
+  if (!isContactApiConfigured()) {
+    throw new Error("Google Apps Script Web App URL is not configured.");
+  }
+
+  await fetch(CONTACT_API_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+  });
+}
 
 export function ContactForm() {
   const { t } = useLanguage();
@@ -25,29 +55,20 @@ export function ContactForm() {
     const formData = new FormData(form);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: String(formData.get("name") || ""),
-          email: String(formData.get("email") || ""),
-          lineId: String(formData.get("lineId") || ""),
-          message: String(formData.get("message") || "")
-        })
+      await sendContactMessage({
+        name: String(formData.get("name") || ""),
+        email: String(formData.get("email") || ""),
+        lineId: String(formData.get("lineId") || ""),
+        message: String(formData.get("message") || ""),
+        submittedAt: new Date().toISOString(),
+        source: "Dasoni contact form"
       });
-
-      await response.json().catch(() => null);
-
-      if (!response.ok) {
-        setStatus("error");
-        setMessage(contactErrorMessage);
-        return;
-      }
 
       form.reset();
       setStatus("success");
       setMessage(contactSuccessMessage);
-    } catch {
+    } catch (error) {
+      console.error("[contact] Google Apps Script submission failed", error);
       setStatus("error");
       setMessage(contactErrorMessage);
     }
