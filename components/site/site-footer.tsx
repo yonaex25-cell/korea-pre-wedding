@@ -1,18 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Instagram, Mail, MapPin } from "lucide-react";
+import { Instagram, Mail, MapPin, X } from "lucide-react";
 import { useLanguage } from "@/components/providers/language-provider";
+import { legalContent, type LegalModalType } from "@/lib/legal-content";
 
 export function SiteFooter() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const [activeLegalModal, setActiveLegalModal] = useState<LegalModalType | null>(null);
 
   if (pathname?.startsWith("/admin")) {
     return null;
   }
+
+  const modalContent = activeLegalModal ? legalContent[activeLegalModal] : null;
 
   return (
     <footer className="border-t border-border bg-white">
@@ -49,11 +54,36 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border py-5">
-        <div className="container-shell flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>{t.footer.copyright}</p>
-          <p>{t.footer.tagline}</p>
+        <div className="container-shell space-y-3 text-center text-xs leading-6 text-muted-foreground">
+          <p>
+            다소니  |  서울특별시 용산구 서빙고로 17 센트럴파크타워 23  |  사업자번호 : 534-30-01853  |  통신판매업신고 : 2026-서울용산-0505  |  남궁유나  |  E-MAIL : yonaex25@gmail.com
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <button type="button" className="font-medium text-foreground underline underline-offset-4 transition hover:text-primary" onClick={() => setActiveLegalModal("terms")}>
+              이용약관
+            </button>
+            <button type="button" className="font-medium text-foreground underline underline-offset-4 transition hover:text-primary" onClick={() => setActiveLegalModal("privacy")}>
+              개인정보처리방침
+            </button>
+          </div>
         </div>
       </div>
+
+      {modalContent ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-6" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+          <div className="relative flex max-h-[86vh] w-full max-w-2xl flex-col rounded-lg bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h2 id="legal-modal-title" className="text-lg font-semibold text-foreground">{modalContent.title}</h2>
+              <button type="button" className="rounded-full p-2 text-muted-foreground transition hover:bg-muted hover:text-foreground" onClick={() => setActiveLegalModal(null)} aria-label="닫기">
+                <X className="size-5" aria-hidden />
+              </button>
+            </div>
+            <div className="overflow-y-auto whitespace-pre-line px-5 py-5 text-sm leading-7 text-muted-foreground">
+              {modalContent.body}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </footer>
   );
 }
