@@ -15,23 +15,82 @@ type ReservationFormProps = {
   selectedStudioSlug?: string;
 };
 
+const RESERVATION_API_URL: string = "https://script.google.com/macros/s/AKfycbx0A7WVbEXV8h68m4eQglodRav993mzIPJHb9bdbkuFPvFkgOI_WPNvC4334kpa0v9x/exec";
+
+type ReservationPayload = {
+  formType: "reservation";
+  studio: string;
+  desiredDate: string;
+  name: string;
+  lineId: string;
+  email: string;
+  message: string;
+  locale: LanguageCode;
+  createdAt: string;
+};
+
+type ReservationApiResponse = {
+  ok?: boolean;
+  message?: string;
+};
+
 const reservationFormTitle: Record<LanguageCode, string> = {
-  KR: "상담 신청 폼",
+  KR: "\uc0c1\ub2f4 \uc2e0\uccad \ud3fc",
   EN: "Consultation Form",
-  JP: "相談申請フォーム"
+  JP: "\u76f8\u8ac7\u7533\u8acb\u30d5\u30a9\u30fc\u30e0"
 };
 
 const reservationFormNotice: Record<LanguageCode, string> = {
-  KR: "* 상담 신청을 보내시면 순차적으로 답변드리겠습니다.",
+  KR: "* \uc0c1\ub2f4 \uc2e0\uccad\uc744 \ubcf4\ub0b4\uc2dc\uba74 \uc21c\ucc28\uc801\uc73c\ub85c \ub2f5\ubcc0\ub4dc\ub9ac\uaca0\uc2b5\ub2c8\ub2e4.",
   EN: "* After you send your consultation request, we will reply in order.",
-  JP: "* 相談申請を送信いただきましたら、順番に返信いたします。"
+  JP: "* \u76f8\u8ac7\u7533\u8acb\u3092\u9001\u4fe1\u3044\u305f\u3060\u304f\u3068\u3001\u9806\u6b21\u3054\u8fd4\u4fe1\u3044\u305f\u3057\u307e\u3059\u3002"
 };
 
 const reservationSuccessMessage: Record<LanguageCode, string> = {
-  KR: "상담 신청이 완료되었습니다. 순차적으로 답변드리겠습니다. 감사합니다!",
+  KR: "\uc0c1\ub2f4 \uc2e0\uccad\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc21c\ucc28\uc801\uc73c\ub85c \ub2f5\ubcc0\ub4dc\ub9ac\uaca0\uc2b5\ub2c8\ub2e4. \uac10\uc0ac\ud569\ub2c8\ub2e4!",
   EN: "Your consultation request has been submitted. We will reply in order. Thank you!",
-  JP: "相談申請が完了しました。順番に返信いたします。ありがとうございます！"
+  JP: "\u76f8\u8ac7\u7533\u8acb\u304c\u5b8c\u4e86\u3057\u307e\u3057\u305f\u3002\u9806\u6b21\u3054\u8fd4\u4fe1\u3044\u305f\u3057\u307e\u3059\u3002\u3042\u308a\u304c\u3068\u3046\u3054\u3056\u3044\u307e\u3059\uff01"
 };
+
+const reservationErrorMessage: Record<LanguageCode, string> = {
+  KR: "\uc0c1\ub2f4 \uc2e0\uccad\uc744 \ubcf4\ub0bc \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574 \uc8fc\uc138\uc694.",
+  EN: "Could not send your consultation request. Please try again shortly.",
+  JP: "\u76f8\u8ac7\u7533\u8acb\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3057\u3070\u3089\u304f\u3057\u3066\u304b\u3089\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002"
+};
+
+function isReservationApiConfigured(): boolean {
+  try {
+    const url = new URL(RESERVATION_API_URL);
+    return url.protocol === "https:" && url.pathname.endsWith("/exec");
+  } catch {
+    return false;
+  }
+}
+
+async function sendReservationMessage(payload: ReservationPayload): Promise<void> {
+  if (!isReservationApiConfigured()) {
+    throw new Error("Google Apps Script Web App URL is not configured.");
+  }
+
+  const response = await fetch(RESERVATION_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const result = (await response.json().catch(() => null)) as ReservationApiResponse | null;
+
+  if (!response.ok || result?.ok !== true) {
+    console.error("[reservation] Google Apps Script returned an unsuccessful response", {
+      status: response.status,
+      statusText: response.statusText,
+      result
+    });
+    throw new Error(result?.message || "Google Apps Script submission failed.");
+  }
+}
 
 export function ReservationForm({ studios, selectedStudioSlug }: ReservationFormProps) {
   const { language, t } = useLanguage();
@@ -43,37 +102,31 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
     setStatus("loading");
     setMessage("");
 
-    const formData = new FormData(event.currentTarget);
-    const payload = {
-      studioSlug: String(formData.get("studioSlug") || ""),
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const studioSlug = String(formData.get("studioSlug") || "");
+    const selectedStudio = studios.find((studio) => studio.slug === studioSlug);
+    const payload: ReservationPayload = {
+      formType: "reservation",
+      studio: selectedStudio?.name || studioSlug || t.forms.reservation.helpMeChoose,
+      desiredDate: String(formData.get("preferredDate") || ""),
       name: String(formData.get("name") || ""),
-      email: String(formData.get("email") || ""),
       lineId: String(formData.get("lineId") || ""),
-      preferredDate: String(formData.get("preferredDate") || ""),
-      message: String(formData.get("message") || "")
+      email: String(formData.get("email") || ""),
+      message: String(formData.get("message") || ""),
+      locale: language,
+      createdAt: new Date().toISOString()
     };
 
     try {
-      const response = await fetch("/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || result?.ok !== true) {
-        setStatus("error");
-        setMessage(t.forms.reservation.error);
-        return;
-      }
-
-      event.currentTarget.reset();
+      await sendReservationMessage(payload);
+      form.reset();
       setStatus("success");
       setMessage(reservationSuccessMessage[language]);
-    } catch {
+    } catch (error) {
+      console.error("[reservation] Google Apps Script submission failed", error);
       setStatus("error");
-      setMessage(t.forms.reservation.error);
+      setMessage(reservationErrorMessage[language]);
     }
   }
 
