@@ -209,7 +209,7 @@ export const demoReviews: Review[] = [
     country: "Japan",
     rating: 5,
     content: "Dasoni helped us compare styles clearly, and the Seoul studio felt calm from the first consultation to the final gallery.",
-    imageUrl: "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/images/review-mika-ren.png",
     createdAt
   },
   {
@@ -221,7 +221,7 @@ export const demoReviews: Review[] = [
     country: "Japan",
     rating: 5,
     content: "The Jeju route was smooth, beautiful, and easy to understand. We loved having photography and travel details handled together.",
-    imageUrl: "https://images.unsplash.com/photo-1501901609772-df0848060b33?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/images/review-aoi-kenta.png",
     createdAt
   },
   {
@@ -233,7 +233,7 @@ export const demoReviews: Review[] = [
     country: "Japan",
     rating: 5,
     content: "Busan gave us both ocean and city-night images. The recommendations matched our mood and budget very well.",
-    imageUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    imageUrl: "/images/review-yuri-sho.png",
     createdAt
   }
 ];
