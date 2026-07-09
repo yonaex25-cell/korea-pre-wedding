@@ -20,12 +20,12 @@ export const demoStudios: Studio[] = [
     description: "A refined Gangnam studio for elegant Korean wedding portraits with editorial lighting and graceful direction.",
     summary: "A refined Gangnam studio for elegant Korean wedding portraits with editorial lighting and graceful direction.",
     longDescription: "Maison de Luna Seoul combines polished studio sets, premium dress styling, detailed hair and makeup, and calm posing guidance. It is a strong match for couples who want timeless Korean wedding photography with concierge support before and during the shoot.",
-    coverImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-01.png",
+    heroImage: "/images/studio-01.png",
     images: [
-      { id: "luna-1", url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85", alt: "Seoul studio wedding portrait", sortOrder: 0 },
-      { id: "luna-2", url: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=85", alt: "Elegant bridal styling", sortOrder: 1 },
-      { id: "luna-3", url: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=85", alt: "Classic couple portrait", sortOrder: 2 }
+      { id: "luna-1", url: "/images/studio-01.png", alt: "Seoul studio wedding portrait", sortOrder: 0 },
+      { id: "luna-2", url: "/images/studio-01.png", alt: "Elegant bridal styling", sortOrder: 1 },
+      { id: "luna-3", url: "/images/studio-01.png", alt: "Classic couple portrait", sortOrder: 2 }
     ],
     services: ["Two dresses", "One tuxedo", "Hair and makeup", "Concierge coordination", "20 retouched images"],
     includedServices: ["Two dresses", "One tuxedo", "Hair and makeup", "Concierge coordination", "20 retouched images"],
@@ -53,12 +53,12 @@ export const demoStudios: Studio[] = [
     description: "A Jeju outdoor photography team for bright coastal, garden, and resort-inspired wedding sessions.",
     summary: "A Jeju outdoor photography team for bright coastal, garden, and resort-inspired wedding sessions.",
     longDescription: "Atelier Haneul Jeju focuses on sea light, open landscapes, soft garden scenes, and relaxed movement. The team helps plan routes, timing, transport, styling, and weather alternatives for destination wedding photography in Jeju.",
-    coverImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-02.png",
+    heroImage: "/images/studio-02.png",
     images: [
-      { id: "haneul-1", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85", alt: "Jeju coastline for wedding portraits", sortOrder: 0 },
-      { id: "haneul-2", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85", alt: "Jeju garden location", sortOrder: 1 },
-      { id: "haneul-3", url: "https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?auto=format&fit=crop&w=1200&q=85", alt: "Soft outdoor wedding scene", sortOrder: 2 }
+      { id: "haneul-1", url: "/images/studio-02.png", alt: "Jeju coastline for wedding portraits", sortOrder: 0 },
+      { id: "haneul-2", url: "/images/studio-02.png", alt: "Jeju garden location", sortOrder: 1 },
+      { id: "haneul-3", url: "/images/studio-02.png", alt: "Soft outdoor wedding scene", sortOrder: 2 }
     ],
     services: ["Two dresses", "Hair and makeup", "Location vehicle", "Bouquet styling", "25 retouched images"],
     includedServices: ["Two dresses", "Hair and makeup", "Location vehicle", "Bouquet styling", "25 retouched images"],
@@ -86,12 +86,12 @@ export const demoStudios: Studio[] = [
     description: "A cinematic Busan studio combining ocean horizons, city lights, and modern couple portraits.",
     summary: "A cinematic Busan studio combining ocean horizons, city lights, and modern couple portraits.",
     longDescription: "Busan Lumiere Studio is ideal for couples who want a mix of beach, bridge, skyline, and night-view photography. The schedule is designed for shorter trips while keeping the images polished and dramatic.",
-    coverImage: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-03.png",
+    heroImage: "/images/studio-03.png",
     images: [
-      { id: "lumiere-1", url: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=85", alt: "Cinematic wedding styling", sortOrder: 0 },
-      { id: "lumiere-2", url: "https://images.unsplash.com/photo-1494955870715-979ca4f13bf0?auto=format&fit=crop&w=1200&q=85", alt: "Busan sea mood", sortOrder: 1 },
-      { id: "lumiere-3", url: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1200&q=85", alt: "Modern wedding couple", sortOrder: 2 }
+      { id: "lumiere-1", url: "/images/studio-03.png", alt: "Cinematic wedding styling", sortOrder: 0 },
+      { id: "lumiere-2", url: "/images/studio-03.png", alt: "Busan sea mood", sortOrder: 1 },
+      { id: "lumiere-3", url: "/images/studio-03.png", alt: "Modern wedding couple", sortOrder: 2 }
     ],
     services: ["One dress", "One tuxedo", "Hair and makeup", "Night-view session", "18 retouched images"],
     includedServices: ["One dress", "One tuxedo", "Hair and makeup", "Night-view session", "18 retouched images"],
@@ -119,11 +119,11 @@ export const demoStudios: Studio[] = [
     description: "A clean white-set studio in Seongsu for minimal, modern, and naturally polished portraits.",
     summary: "A clean white-set studio in Seongsu for minimal, modern, and naturally polished portraits.",
     longDescription: "Minuette Seongsu uses calm lighting, clean interiors, and simple composition to create refined images with a contemporary Korean mood. It works well for couples who prefer understated elegance.",
-    coverImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-04.png",
+    heroImage: "/images/studio-04.png",
     images: [
-      { id: "minuette-1", url: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85", alt: "Minimal Seoul wedding set", sortOrder: 0 },
-      { id: "minuette-2", url: "https://images.unsplash.com/photo-1482575832494-771f74bf6857?auto=format&fit=crop&w=1200&q=85", alt: "Clean bridal portrait", sortOrder: 1 }
+      { id: "minuette-1", url: "/images/studio-04.png", alt: "Minimal Seoul wedding set", sortOrder: 0 },
+      { id: "minuette-2", url: "/images/studio-04.png", alt: "Clean bridal portrait", sortOrder: 1 }
     ],
     services: ["One dress", "Hair and makeup", "Indoor studio set", "15 retouched images"],
     includedServices: ["One dress", "Hair and makeup", "Indoor studio set", "15 retouched images"],
@@ -151,11 +151,11 @@ export const demoStudios: Studio[] = [
     description: "A classic Seoul studio for hanbok styling and palace-inspired wedding photography.",
     summary: "A classic Seoul studio for hanbok styling and palace-inspired wedding photography.",
     longDescription: "Royal Hanbok House is built for couples who want Korean cultural styling, graceful hanbok portraits, and historic Seoul backdrops. The team supports styling, location timing, and respectful palace-area photography planning.",
-    coverImage: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-05.png",
+    heroImage: "/images/studio-05.png",
     images: [
-      { id: "hanbok-1", url: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=1400&q=85", alt: "Traditional wedding styling", sortOrder: 0 },
-      { id: "hanbok-2", url: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?auto=format&fit=crop&w=1200&q=85", alt: "Historic palace mood", sortOrder: 1 }
+      { id: "hanbok-1", url: "/images/studio-05.png", alt: "Traditional wedding styling", sortOrder: 0 },
+      { id: "hanbok-2", url: "/images/studio-05.png", alt: "Historic palace mood", sortOrder: 1 }
     ],
     services: ["Two hanbok looks", "Hair and makeup", "Palace-area session", "Concierge guidance", "18 retouched images"],
     includedServices: ["Two hanbok looks", "Hair and makeup", "Palace-area session", "Concierge guidance", "18 retouched images"],
@@ -183,10 +183,10 @@ export const demoStudios: Studio[] = [
     description: "A Jeju garden team for floral, stone-wall, and coastal wedding photography routes.",
     summary: "A Jeju garden team for floral, stone-wall, and coastal wedding photography routes.",
     longDescription: "Oro Jeju Garden plans soft, romantic routes through seasonal flowers, Jeju stone textures, and open coastal scenery. It is a comfortable choice for couples traveling with family or seeking a gentle outdoor mood.",
-    coverImage: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",
-    heroImage: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",
+    coverImage: "/images/studio-06.png",
+    heroImage: "/images/studio-06.png",
     images: [
-{ id: "oro-1", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85", alt: "Jeju garden wedding location", sortOrder: 0 },      { id: "oro-2", url: "https://images.unsplash.com/photo-1460364157752-926555421a7e?auto=format&fit=crop&w=1200&q=85", alt: "Jeju floral location", sortOrder: 1 }
+{ id: "oro-1", url: "/images/studio-06.png", alt: "Jeju garden wedding location", sortOrder: 0 },      { id: "oro-2", url: "/images/studio-06.png", alt: "Jeju floral location", sortOrder: 1 }
     ],
     services: ["Two dresses", "Hair and makeup", "Outdoor session", "Family travel guidance", "22 retouched images"],
     includedServices: ["Two dresses", "Hair and makeup", "Outdoor session", "Family travel guidance", "22 retouched images"],
