@@ -20,11 +20,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const reservationInsertPayload = {
-    studio_slug: parsed.data.studioSlug || null,
+  const reservationInsertBasePayload = {
     name: parsed.data.name,
     email: parsed.data.email,
-    line_id: parsed.data.lineId || null,
+    line_id: parsed.data.lineId ?? "",
     preferred_date: parsed.data.preferredDate,
     message: parsed.data.message,
     status: "new"
@@ -36,15 +35,42 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, demo: true });
   }
 
-  const { data, error } = await supabase
-    .from("reservations")
-    .insert(reservationInsertPayload as never)
-    .select("id")
-    .single();
+  let studioId: string | null = null;
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (parsed.data.studioSlug) {
+    const { data: studio } = await supabase
+      .from("studios")
+      .select("id")
+      .eq("slug", parsed.data.studioSlug)
+      .maybeSingle();
+
+    studioId = studio?.id ?? null;
   }
 
-  return NextResponse.json({ ok: true, id: data?.id });
+  const insertPayloads = [
+    { ...reservationInsertBasePayload, studio_id: studioId },
+    { ...reservationInsertBasePayload, studio_slug: parsed.data.studioSlug || null }
+  ];
+
+  let lastError: { message: string } | null = null;
+
+  for (const payload of insertPayloads) {
+    const { data, error } = await supabase
+      .from("reservations")
+      .insert(payload as never)
+      .select("id")
+      .single();
+
+    if (!error) {
+      return NextResponse.json({ ok: true, id: data?.id });
+    }
+
+    lastError = error;
+  }
+
+  if (lastError) {
+    return NextResponse.json({ error: lastError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ error: "Could not save the reservation." }, { status: 500 });
 }

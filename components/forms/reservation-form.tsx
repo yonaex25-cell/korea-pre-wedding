@@ -21,6 +21,18 @@ const reservationFormTitle: Record<LanguageCode, string> = {
   JP: "相談申請フォーム"
 };
 
+const reservationFormNotice: Record<LanguageCode, string> = {
+  KR: "* 상담 신청을 보내시면 순차적으로 답변드리겠습니다.",
+  EN: "* After you send your consultation request, we will reply in order.",
+  JP: "* 相談申請を送信いただきましたら、順番に返信いたします。"
+};
+
+const reservationSuccessMessage: Record<LanguageCode, string> = {
+  KR: "상담 신청이 완료되었습니다. 순차적으로 답변드리겠습니다. 감사합니다!",
+  EN: "Your consultation request has been submitted. We will reply in order. Thank you!",
+  JP: "相談申請が完了しました。順番に返信いたします。ありがとうございます！"
+};
+
 export function ReservationForm({ studios, selectedStudioSlug }: ReservationFormProps) {
   const { language, t } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -58,7 +70,7 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
 
       event.currentTarget.reset();
       setStatus("success");
-      setMessage(result.demo ? t.forms.reservation.demoSuccess : t.forms.reservation.success);
+      setMessage(reservationSuccessMessage[language]);
     } catch {
       setStatus("error");
       setMessage(t.forms.reservation.error);
@@ -96,6 +108,7 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
         <Textarea id="message" name="message" placeholder={t.forms.reservation.placeholder} required />
       </div>
       {message ? <p className={status === "error" ? "text-sm text-destructive" : "text-sm text-sage"}>{message}</p> : null}
+      <p className="text-sm leading-6 text-muted-foreground">{reservationFormNotice[language]}</p>
       <Button type="submit" disabled={status === "loading"}>
         <Send aria-hidden /> {status === "loading" ? t.forms.common.sending : t.forms.reservation.submit}
       </Button>
