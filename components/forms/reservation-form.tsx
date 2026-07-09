@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
@@ -55,36 +55,29 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
-      <div className="grid gap-5 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="studioSlug">{t.forms.reservation.studio}</Label>
-          <Select id="studioSlug" name="studioSlug" defaultValue={selectedStudioSlug || ""}>
-            <option value="">{t.forms.reservation.helpMeChoose}</option>
-            {studios.map((studio) => <option key={studio.slug} value={studio.slug}>{studio.name}</option>)}
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="preferredDate">{t.forms.reservation.preferredDate}</Label>
-          <div className="relative">
-            <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-            <Input id="preferredDate" name="preferredDate" type="date" className="pl-9" required />
-          </div>
-        </div>
+    <form onSubmit={handleSubmit} className="grid h-full gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
+      <div className="space-y-2">
+        <Label htmlFor="studioSlug">{t.forms.reservation.studio}</Label>
+        <Select id="studioSlug" name="studioSlug" defaultValue={selectedStudioSlug || ""}>
+          <option value="">{t.forms.reservation.helpMeChoose}</option>
+          {studios.map((studio) => <option key={studio.slug} value={studio.slug}>{studio.name}</option>)}
+        </Select>
       </div>
-      <div className="grid gap-5 md:grid-cols-3">
-        <div className="space-y-2">
-          <Label htmlFor="name">{t.forms.common.name}</Label>
-          <Input id="name" name="name" autoComplete="name" required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">{t.forms.common.email}</Label>
-          <Input id="email" name="email" type="email" autoComplete="email" required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
-          <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="preferredDate">{t.forms.reservation.preferredDate}</Label>
+        <Input id="preferredDate" name="preferredDate" type="date" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="name">{t.forms.common.name}</Label>
+        <Input id="name" name="name" autoComplete="name" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">{t.forms.common.email}</Label>
+        <Input id="email" name="email" type="email" autoComplete="email" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
+        <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
       </div>
       <div className="space-y-2">
         <Label htmlFor="message">{t.forms.common.message}</Label>
