@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createServiceRoleClient } from "@/lib/supabase/server";
+import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { reservationSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
@@ -29,10 +29,13 @@ export async function POST(request: Request) {
     status: "new"
   };
 
-  const supabase = await createServiceRoleClient();
+  const supabase = await createServiceRoleClient() || await createServerSupabaseClient();
 
   if (!supabase) {
-    return NextResponse.json({ ok: true, demo: true });
+    return NextResponse.json(
+      { error: "Supabase is not configured. Please add the required environment variables." },
+      { status: 503 }
+    );
   }
 
   let studioId: string | null = null;
