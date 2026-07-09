@@ -2,7 +2,7 @@
 
 import { Send } from "lucide-react";
 import { FormEvent, useState } from "react";
-import { useLanguage } from "@/components/providers/language-provider";
+import { useLanguage, type LanguageCode } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,14 @@ type ReservationFormProps = {
   selectedStudioSlug?: string;
 };
 
+const reservationFormTitle: Record<LanguageCode, string> = {
+  KR: "상담 신청 폼",
+  EN: "Consultation Form",
+  JP: "相談申請フォーム"
+};
+
 export function ReservationForm({ studios, selectedStudioSlug }: ReservationFormProps) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -56,6 +62,7 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
 
   return (
     <form onSubmit={handleSubmit} className="grid h-full gap-5 rounded-lg border border-border bg-white p-5 shadow-soft">
+      <h2 className="text-xl font-semibold text-foreground">{reservationFormTitle[language]}</h2>
       <div className="space-y-2">
         <Label htmlFor="studioSlug">{t.forms.reservation.studio}</Label>
         <Select id="studioSlug" name="studioSlug" defaultValue={selectedStudioSlug || ""}>
@@ -72,12 +79,12 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
         <Input id="name" name="name" autoComplete="name" required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">{t.forms.common.email}</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" required />
+        <Label htmlFor="lineId">{t.forms.common.lineId} ({t.forms.common.optional})</Label>
+        <Input id="lineId" name="lineId" placeholder="ngyn9813" />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="lineId">{t.forms.common.lineId}</Label>
-        <Input id="lineId" name="lineId" placeholder="ngyn9813" required />
+        <Label htmlFor="email">{t.forms.common.email}</Label>
+        <Input id="email" name="email" type="email" autoComplete="email" required />
       </div>
       <div className="space-y-2">
         <Label htmlFor="message">{t.forms.common.message}</Label>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ReservationForm } from "@/components/forms/reservation-form";
-import { LocalizedText } from "@/components/site/localized-text";
-import { SectionHeading } from "@/components/site/section-heading";
+import { ReservationContactMethods, ReservationHeroCopy } from "@/components/site/reservation-page-content";
 import { getStudios } from "@/lib/studio-service";
 
 export const metadata: Metadata = {
@@ -24,17 +24,21 @@ export default async function ReservationPage({ searchParams }: PageProps) {
 
   return (
     <main className="bg-background">
-      <section className="container-shell grid gap-10 py-14 md:py-20 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="space-y-5">
-          <SectionHeading
-            eyebrow={<LocalizedText path="pages.reservationEyebrow" fallback="Consultation" />}
-            title={<LocalizedText path="pages.reservationTitle" fallback="Request a studio consultation" />}
-            description={<LocalizedText path="pages.reservationDescription" fallback="Share your preferred date, LINE ID, and photography goals. Dasoni will help you confirm studio fit, availability, and next steps." />}
+      <section className="container-shell grid gap-10 py-14 md:py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <ReservationHeroCopy />
+        <div className="relative aspect-[3/2] overflow-hidden rounded-lg border border-border bg-white shadow-soft">
+          <Image
+            src="/images/reservation-consultation.png"
+            alt="Dasoni consultation"
+            fill
+            priority
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
           />
-          <div className="rounded-lg border border-border bg-white p-5 text-sm leading-7 text-muted-foreground shadow-soft">
-            <LocalizedText path="pages.reservationNote" fallback="Before confirming, Dasoni helps review available dates, package details, optional costs, and weather alternatives." />
-          </div>
         </div>
+      </section>
+      <section className="container-shell grid gap-10 pb-14 md:pb-20 lg:grid-cols-[0.8fr_1.2fr]">
+        <ReservationContactMethods />
         <ReservationForm studios={studios} selectedStudioSlug={selectedStudioSlug} />
       </section>
     </main>
