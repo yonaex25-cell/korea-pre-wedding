@@ -10,7 +10,9 @@ import {
   StudioDescriptionText,
   StudioDestinationsText,
   StudioLocationText,
-  StudioServiceText,
+  StudioPackageDescriptionText,
+  StudioPackageServiceText,
+  StudioPackageTitleText,
   StudioStyleBadges
 } from "@/components/studios/studio-detail-localized";
 import { ReviewCard } from "@/components/site/review-card";
@@ -25,11 +27,24 @@ type StudioDetailView = {
   slug?: string;
   priceFrom?: number;
   rating?: number;
-  services?: string[];
   destinations?: string[];
   faqs?: Parameters<typeof FaqList>[0]["faqs"];
   reviews?: Array<Parameters<typeof ReviewCard>[0]["review"]>;
 };
+
+const packageServices = [
+  "Dresses 2-3",
+  "Tuxedo 1",
+  "Casual outfit session",
+  "Hair & makeup",
+  "Hair style change",
+  "Professional photo direction",
+  "All original photos",
+  "Retouched photos",
+  "Album production",
+  "Frame included",
+  "Japanese consultation support"
+];
 
 function asStudioDetailView(studio: Awaited<ReturnType<typeof getStudioBySlug>>): StudioDetailView {
   return (studio || {}) as StudioDetailView;
@@ -66,7 +81,6 @@ export default async function StudioDetailPage({ params }: PageProps) {
   }
 
   const detail = asStudioDetailView(studio);
-  const services = Array.isArray(detail.services) ? detail.services : [];
   const destinations = Array.isArray(detail.destinations) ? detail.destinations : [];
   const faqs = Array.isArray(detail.faqs) ? detail.faqs : [];
   const reviews = Array.isArray(detail.reviews) ? detail.reviews : [];
@@ -115,17 +129,18 @@ export default async function StudioDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {services.length ? (
+        {packageServices.length ? (
           <section className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="space-y-3">
               <p className="eyebrow"><LocalizedText path="studio.includedServices" fallback="Included Services" /></p>
-              <h2 className="text-3xl font-semibold text-ink"><LocalizedText path="studio.packageHighlights" fallback="Package highlights" /></h2>
+              <h2 className="text-3xl font-semibold text-ink"><StudioPackageTitleText /></h2>
+              <p className="leading-8 text-muted-foreground"><StudioPackageDescriptionText studio={studio} /></p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              {services.map((service) => (
+              {packageServices.map((service) => (
                 <div key={service} className="flex items-center gap-3 rounded-lg border border-border bg-white p-4 shadow-soft">
                   <Check className="size-5 text-gold-700" aria-hidden />
-                  <span className="font-medium"><StudioServiceText service={service} /></span>
+                  <span className="font-medium"><StudioPackageServiceText service={service} /></span>
                 </div>
               ))}
             </div>
