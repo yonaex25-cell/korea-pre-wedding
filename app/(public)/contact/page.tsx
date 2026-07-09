@@ -28,8 +28,9 @@ export default function ContactPage() {
             </Link>
           </section>
 
-          <section>
-            <Link className="inline-flex text-foreground transition hover:text-primary" href="https://www.instagram.com/dasoni_korea_wd" target="_blank" rel="noreferrer" aria-label="Dasoni Instagram">
+          <section className="space-y-8">
+            <Link className="inline-flex flex-col items-center gap-4 text-foreground transition hover:text-primary" href="https://www.instagram.com/dasoni_korea_wd" target="_blank" rel="noreferrer" aria-label="Dasoni Instagram">
+              <span className="text-[28px] font-bold tracking-[0.03em] text-foreground md:text-[32px]">Instagram</span>
               <Instagram className="size-10" aria-hidden />
             </Link>
           </section>
