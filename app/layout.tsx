@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   metadataBase: new URL(siteConfig.url),
+  verification: {
+    other: {
+      "naver-site-verification": "0ea845505c13f22e65be175303746d3cbd03bf9c"
+    }
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
