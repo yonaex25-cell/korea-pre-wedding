@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     studio_slug: parsed.data.studioSlug || null,
     name: parsed.data.name,
     email: parsed.data.email,
-    line_id: parsed.data.lineId,
+    line_id: parsed.data.lineId || null,
     preferred_date: parsed.data.preferredDate,
     message: parsed.data.message,
     status: "new"
@@ -33,10 +33,7 @@ export async function POST(request: Request) {
   const supabase = await createServiceRoleClient();
 
   if (!supabase) {
-    return NextResponse.json(
-      { error: "Supabase is not configured. Please add the required environment variables." },
-      { status: 503 }
-    );
+    return NextResponse.json({ ok: true, demo: true });
   }
 
   const { data, error } = await supabase

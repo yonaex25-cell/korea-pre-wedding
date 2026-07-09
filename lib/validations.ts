@@ -5,8 +5,8 @@ export const reservationSchema = z.object({
   studioSlug: z.string().trim().optional().nullable(),
   name: z.string().trim().min(2, "Please enter your name."),
   email: z.string().trim().email("Please enter a valid email address."),
-  lineId: z.string().trim().min(2, "Please enter your LINE ID."),
-  preferredDate: z.string().regex(/^d{4}-d{2}-d{2}$/, "Please choose a preferred date."),
+  lineId: z.string().trim().optional().nullable(),
+  preferredDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please choose a preferred date."),
   message: z.string().trim().min(5, "Please share a few details about your request.")
 });
 

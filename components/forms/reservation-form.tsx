@@ -41,23 +41,28 @@ export function ReservationForm({ studios, selectedStudioSlug }: ReservationForm
       message: String(formData.get("message") || "")
     };
 
-    const response = await fetch("/api/reservations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
+      if (!response.ok || result?.ok !== true) {
+        setStatus("error");
+        setMessage(t.forms.reservation.error);
+        return;
+      }
+
+      event.currentTarget.reset();
+      setStatus("success");
+      setMessage(result.demo ? t.forms.reservation.demoSuccess : t.forms.reservation.success);
+    } catch {
       setStatus("error");
       setMessage(t.forms.reservation.error);
-      return;
     }
-
-    event.currentTarget.reset();
-    setStatus("success");
-    setMessage(result.demo ? t.forms.reservation.demoSuccess : t.forms.reservation.success);
   }
 
   return (
